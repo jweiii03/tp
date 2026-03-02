@@ -302,6 +302,83 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 (For all use cases below, the **System** is the `InternTrack` and the **Actor** is the `user`, unless specified otherwise)
 
+**Use case: UC04 — Update status/stage of an opportunity**
+
+Preconditions: At least one record exists.
+
+**MSS**
+
+1.  User requests to <u>list opportunity records (UC3).<u/>
+2.  System shows the list of opportunity records.
+3.  User requests to update the status/stage of a specified record.
+4.  System validates the new status value.
+5.  System updates the record.
+6.  System reflects the update.
+
+    Use case ends.
+
+**Extensions**
+
+* 4a. Index is invalid.
+  * 4a1. System shows an error message.
+
+    Use case resumes from step 3.
+
+* 4b. Status value is invalid.
+  * 4b1. System shows an error message listing accepted status values.
+
+    Use case resumes from step 3.
+
+
+**Use case: UC05 — Record or update a deadline**
+
+Preconditions: At least one record exists.
+
+**MSS**
+
+1.  User requests to <u>list opportunity records (UC3).<u/>
+2.  System shows the list of opportunity records. 
+3.  User requests to set or update the deadline for a specified record 
+4.  System validates the deadline value. 
+5.  System updates the record 
+6.  System reflects the update.
+
+    Use case ends.
+
+**Extensions**
+
+* 4a. Index is invalid.
+    * 4a1. System shows an error message.
+
+      Use case resumes from step 3.
+
+* 4b. Deadline format is invalid.
+    * 4b1. System shows an error message indicating the accepted format.
+
+      Use case resumes from step 3.
+
+* 4c. Deadline is in the past.
+    * 4c1. System shows a warning.
+
+      Use case resumes from step 5.
+
+
+**Use case: UC06 — Search for opportunities by keyword**
+
+**MSS**
+
+1.  User requests to search opportunity records matching a keyword. 
+2.  System shows all records that match the keyword.
+
+    Use case ends.
+
+**Extensions**
+
+* 2a. No matches found.
+    * 2a1. System informs the user there are no matching records.
+
+      Use case ends.
+
 **Use case: UC07 - Archive an application cycle (representative non-MVP, multi-step)**
 
 **Preconditions:** At least one record exists in the current cycle.
@@ -314,9 +391,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
    Use case ends.
 
+
 **Extensions**
 
-* 1a. No record exists.
+* 1a. No records exist.
     * 1a1. System informs the user there is nothing to archive.
 
       Use case ends.
