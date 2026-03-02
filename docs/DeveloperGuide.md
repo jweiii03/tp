@@ -274,13 +274,19 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
+* requires a lightweight way to manage a significant number of concurrent internship applications
+* tech-savvy undergraduate
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: 
+
+* manage internship applications faster than a typical mouse/GUI driven app
+* helps user capture, update, and retrieve key application details in seconds
+* reduce missed deadlines and mental overhead while managing concurrent applications
+* serve as a lightweight offline desktop tool
 
 
 ### User stories
@@ -289,11 +295,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 | Priority | As a …​                                    | I want to …​                 | So that I …​             |
 |----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
+| `* * *`  | undergraduate applicant | add a new opportunity record | can track it instead of relying on memory |
+| `* * *`  | busy applicant juggling many applications | list all opportunities I’m tracking | can see my workload at a glance |
+| `* * *`  | busy applicant juggling many applications | remove an opportunity I no longer pursue | can ensure my tracker stays uncluttered |
+| `* * *`  | undergraduate applicant | have confidence that my tracked items persist between sessions  | don’t lose critical application info |
+| `* *`  |new user exploring InternTrack|see example entries|can understand what information I’m supposed to track|
+| `* *`  |new user exploring InternTrack|remove the example entries in one go|can start clean without tedious manual cleanup|
+| `* *`  |busy applicant juggling many applications|record a deadline for an opportunity|don’t miss time-sensitive submissions|
+| `* *`  |busy applicant juggling many applications|quickly find an opportunity by keyword|can retrieve details under time pressure|
+| `* *`  |busy applicant juggling many applications|update the status/stage of an opportunity|the tracker reflects current progress|
+| `* *`  |busy applicant juggling many applications|see opportunities ordered by upcoming deadlines|know what to prioritize next|
+| `* *`  |undergraduate applicant|record the role and organization|can differentiate similar opportunities|
+| `* *`  |busy applicant juggling many applications|record a posting reference (e.g., link or identifier)|can revisit the source quickly|
+| `* *`  |undergraduate applicant|store recruiter/contact details for an opportunity|can follow up without searching through chats|
+| `* *`  |undergraduate applicant|mark an opportunity with a completed outcome|can close loops and reduce mental load|
+| `* *`  |busy applicant juggling many applications|view only opportunities in a chosen status|can batch-handle similar tasks|                                              |
 | `*` |  undergraduate applicant | tag / classify opportunities          |  can separate different application types quickly |
 | `*` |  undergraduate applicant | store a short note for an opportunity |  can remember context like referrals or required documents |
 | `*` |  undergraduate applicant | record milestone dates  |  can reconstruct my timeline when needed |
@@ -355,7 +371,7 @@ Preconditions: At least one record exists.
 
 **MSS**
 
-1.  User requests to <u>list opportunity records (UC3).<u/>
+1.  User requests to <u>list opportunity records (UC3).</u>
 2.  System shows the list of opportunity records.
 3.  User requests to update the status/stage of a specified record.
 4.  System validates the new status value.
@@ -383,7 +399,7 @@ Preconditions: At least one record exists.
 
 **MSS**
 
-1.  User requests to <u>list opportunity records (UC3).<u/>
+1.  User requests to <u>list opportunity records (UC3).</u>
 2.  System shows the list of opportunity records.
 3.  User requests to set or update the deadline for a specified record
 4.  System validates the deadline value.
