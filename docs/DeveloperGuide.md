@@ -295,12 +295,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 | Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
 |----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| `* * *`  | undergraduate applicant | add a new opportunity record | can track it instead of relying on memory |
+| `* * *`  | busy applicant juggling many applications | list all opportunities I’m tracking | can see my workload at a glance |
+| `* * *`  | busy applicant juggling many applications | remove an opportunity I no longer pursue | can ensure my tracker stays uncluttered |
+| `* * *`  | undergraduate applicant | have confidence that my tracked items persist between sessions  | don’t lose critical application info |
+| `* *`  |new user exploring InternTrack|see example entries|can understand what information I’m supposed to track|
+| `* *`  |new user exploring InternTrack|remove the example entries in one go|can start clean without tedious manual cleanup|
+| `* *`  |busy applicant juggling many applications|record a deadline for an opportunity|don’t miss time-sensitive submissions|
+| `* *`  |busy applicant juggling many applications|quickly find an opportunity by keyword|can retrieve details under time pressure|
+| `* *`  |busy applicant juggling many applications|update the status/stage of an opportunity|the tracker reflects current progress|
+| `* *`  |busy applicant juggling many applications|see opportunities ordered by upcoming deadlines|know what to prioritize next|
+| `* *`  |undergraduate applicant|record the role and organization|can differentiate similar opportunities|
+| `* *`  |busy applicant juggling many applications|record a posting reference (e.g., link or identifier)|can revisit the source quickly|
+| `* *`  |undergraduate applicant|store recruiter/contact details for an opportunity|can follow up without searching through chats|
+| `* *`  |undergraduate applicant|mark an opportunity with a completed outcome|can close loops and reduce mental load|
+| `* *`  |busy applicant juggling many applications|view only opportunities in a chosen status|can batch-handle similar tasks|                                              |
 
 *{More to be added}*
 
