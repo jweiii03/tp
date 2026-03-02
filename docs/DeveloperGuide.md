@@ -274,7 +274,8 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
+* requires a lightweight way to manage a significant number of concurrent internship applications
+* tech-savvy undergraduate
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
