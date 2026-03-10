@@ -87,7 +87,8 @@ public class OpportunityContainsKeywordsPredicateTest {
         List<String> keywords = List.of("keyword1", "keyword2");
         OpportunityContainsSubstringPredicate predicate = new OpportunityContainsSubstringPredicate(keywords);
 
-        String expected = OpportunityContainsSubstringPredicate.class.getCanonicalName() + "{keywords=" + keywords + "}";
+        String expected = OpportunityContainsSubstringPredicate.class.getCanonicalName()
+                + "{keywords=" + keywords + "}";
         assertEquals(expected, predicate.toString());
     }
 }

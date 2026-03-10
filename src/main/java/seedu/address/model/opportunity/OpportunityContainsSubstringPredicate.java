@@ -16,6 +16,7 @@ public class OpportunityContainsSubstringPredicate implements Predicate<Opportun
         this.keywords = keywords;
     }
 
+    @Override
     public boolean test(Opportunity opportunity) {
         return keywords.stream()
                 .anyMatch(keyword -> StringUtil.containsSubstringIgnoreCase(
