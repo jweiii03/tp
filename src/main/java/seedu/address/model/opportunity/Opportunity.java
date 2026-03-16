@@ -3,27 +3,54 @@ package seedu.address.model.opportunity;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import seedu.address.commons.util.ToStringBuilder;
 
 /**
- * Represents an Opportunity in the address book.
- * Guarantees: required fields are present and not null, optional fields may be null,
+ * Represents an Opportunity in the tracker.
+ * Guarantees: required fields are present and not null, optional fields may be absent,
  * field values are validated by their respective classes, immutable.
  */
 public class Opportunity {
 
     // Required fields
+    private final Name name;
+    private final Email email;
+    private final ContactRole contactRole;
     private final Company company;
     private final Role role;
+    private final Status status;
+
+    // Optional fields
+    private final Phone phone;
 
     /**
-     * Every field must be present and not null.
+     * Required fields must be present and not null.
+     * Phone is optional and may be null.
      */
-    public Opportunity(Company company, Role role) {
-        requireAllNonNull(company, role);
+    public Opportunity(Name name, Email email, ContactRole contactRole,
+                       Company company, Role role, Status status, Phone phone) {
+        requireAllNonNull(name, email, contactRole, company, role, status);
+        this.name = name;
+        this.email = email;
+        this.contactRole = contactRole;
         this.company = company;
         this.role = role;
+        this.status = status;
+        this.phone = phone;
+    }
+
+    public Name getName() {
+        return name;
+    }
+
+    public Email getEmail() {
+        return email;
+    }
+
+    public ContactRole getContactRole() {
+        return contactRole;
     }
 
     public Company getCompany() {
@@ -34,8 +61,19 @@ public class Opportunity {
         return role;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     /**
-     * Returns true if both opportunities have the same Company and Role name.
+     * Returns an {@code Optional} containing the phone number, or an empty Optional if absent.
+     */
+    public Optional<Phone> getPhone() {
+        return Optional.ofNullable(phone);
+    }
+
+    /**
+     * Returns true if both opportunities have the same Company and Role.
      * This defines a weaker notion of equality between two opportunities.
      */
     public boolean isSameOpportunity(Opportunity otherOpportunity) {
@@ -64,21 +102,30 @@ public class Opportunity {
         }
 
         Opportunity otherOpportunity = (Opportunity) other;
-        return company.equals(otherOpportunity.company)
-            && role.equals(otherOpportunity.role);
+        return name.equals(otherOpportunity.name)
+            && email.equals(otherOpportunity.email)
+            && contactRole.equals(otherOpportunity.contactRole)
+            && company.equals(otherOpportunity.company)
+            && role.equals(otherOpportunity.role)
+            && status.equals(otherOpportunity.status)
+            && Objects.equals(phone, otherOpportunity.phone);
     }
 
     @Override
     public int hashCode() {
-        // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(company, role);
+        return Objects.hash(name, email, contactRole, company, role, status, phone);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .add("name", name)
+                .add("email", email)
+                .add("contactRole", contactRole)
                 .add("company", company)
                 .add("role", role)
+                .add("status", status)
+                .add("phone", phone)
                 .toString();
     }
 
