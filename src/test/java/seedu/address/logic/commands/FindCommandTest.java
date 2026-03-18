@@ -68,7 +68,7 @@ public class FindCommandTest {
     @Test
     public void execute_multipleKeywords_multipleOpportunitiesFound() {
         String expectedMessage = String.format(MESSAGE_OPPORTUNITIES_LISTED_OVERVIEW, 3);
-        OpportunityContainsSubstringPredicate predicate = preparePredicate("Apple Netflix Amazon");
+        OpportunityContainsSubstringPredicate predicate = preparePredicate("Carl Elle Fiona");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredOpportunityList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -78,7 +78,7 @@ public class FindCommandTest {
     @Test
     public void execute_partialKeyword_opportunityFound() {
         String expectedMessage = String.format(MESSAGE_OPPORTUNITIES_LISTED_OVERVIEW, 1);
-        OpportunityContainsSubstringPredicate predicate = preparePredicate("str");
+        OpportunityContainsSubstringPredicate predicate = preparePredicate("lic");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredOpportunityList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -95,7 +95,7 @@ public class FindCommandTest {
     }
 
     /**
-     * Parses {@code userInput} into a {@code OpportunityContainsKeywordsPredicate}.
+     * Parses {@code userInput} into an {@code OpportunityContainsSubstringPredicate}.
      */
     private OpportunityContainsSubstringPredicate preparePredicate(String userInput) {
         return new OpportunityContainsSubstringPredicate(Arrays.asList(userInput.split("\\s+")));
