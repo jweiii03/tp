@@ -140,7 +140,7 @@ public class CommandTestUtil {
         assertTrue(targetIndex.getZeroBased() < model.getFilteredOpportunityList().size());
 
         Opportunity opportunity = model.getFilteredOpportunityList().get(targetIndex.getZeroBased());
-        final String[] splitName = opportunity.getCompany().companyName.split("\\s+");
+        final String[] splitName = opportunity.getName().fullName.split("\\s+");
         model.updateFilteredOpportunityList(new OpportunityContainsSubstringPredicate(Arrays.asList(splitName[0])));
 
         assertEquals(1, model.getFilteredOpportunityList().size());
