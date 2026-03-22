@@ -46,6 +46,7 @@ public class EditCommand extends Command {
             + "[" + PREFIX_ROLE + "ROLE] "
             + "[" + PREFIX_STATUS + "STATUS] "
             + "[" + PREFIX_PHONE + "PHONE]\n"
+            + "Use " + PREFIX_PHONE + " (with no value) to clear an existing phone number.\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_STATUS + "INTERVIEW "
             + PREFIX_EMAIL + "new@example.com";
@@ -105,7 +106,12 @@ public class EditCommand extends Command {
         Company updatedCompany = editOpportunityDescriptor.getCompany().orElse(opportunityToEdit.getCompany());
         Role updatedRole = editOpportunityDescriptor.getRole().orElse(opportunityToEdit.getRole());
         Status updatedStatus = editOpportunityDescriptor.getStatus().orElse(opportunityToEdit.getStatus());
-        Phone updatedPhone = editOpportunityDescriptor.getPhone().orElse(opportunityToEdit.getPhone().orElse(null));
+        Phone updatedPhone;
+        if (editOpportunityDescriptor.isClearPhone()) {
+            updatedPhone = null;
+        } else {
+            updatedPhone = editOpportunityDescriptor.getPhone().orElse(opportunityToEdit.getPhone().orElse(null));
+        }
 
         return new Opportunity(updatedName, updatedEmail, updatedContactRole,
                 updatedCompany, updatedRole, updatedStatus,
@@ -148,6 +154,8 @@ public class EditCommand extends Command {
         private Role role;
         private Status status;
         private Phone phone;
+        /** When true, the phone field should be cleared (set to absent) on the edited opportunity. */
+        private boolean clearPhone = false;
 
         public EditOpportunityDescriptor() {}
 
@@ -162,13 +170,14 @@ public class EditCommand extends Command {
             setRole(toCopy.role);
             setStatus(toCopy.status);
             setPhone(toCopy.phone);
+            setClearPhone(toCopy.clearPhone);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, email, contactRole, company, role, status, phone);
+            return CollectionUtil.isAnyNonNull(name, email, contactRole, company, role, status, phone) || clearPhone;
         }
 
         public void setName(Name name) {
@@ -227,6 +236,22 @@ public class EditCommand extends Command {
             return Optional.ofNullable(phone);
         }
 
+        /**
+         * Sets whether the phone field should be explicitly cleared.
+         * When {@code true}, the phone number will be removed from the opportunity on edit,
+         * regardless of whether a new phone value is provided.
+         */
+        public void setClearPhone(boolean clearPhone) {
+            this.clearPhone = clearPhone;
+        }
+
+        /**
+         * Returns true if the phone field should be explicitly cleared on edit.
+         */
+        public boolean isClearPhone() {
+            return clearPhone;
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -245,7 +270,8 @@ public class EditCommand extends Command {
                 && getCompany().equals(otherEditOpportunityDescriptor.getCompany())
                 && getRole().equals(otherEditOpportunityDescriptor.getRole())
                 && getStatus().equals(otherEditOpportunityDescriptor.getStatus())
-                && getPhone().equals(otherEditOpportunityDescriptor.getPhone());
+                && getPhone().equals(otherEditOpportunityDescriptor.getPhone())
+                && isClearPhone() == otherEditOpportunityDescriptor.isClearPhone();
         }
 
         @Override
@@ -258,6 +284,7 @@ public class EditCommand extends Command {
                     .add("role", role)
                     .add("status", status)
                     .add("phone", phone)
+                    .add("clearPhone", clearPhone)
                     .toString();
         }
     }
