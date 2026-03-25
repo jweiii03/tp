@@ -148,6 +148,7 @@ Format: `delete INDEX [MORE_INDICES]...`
 * The index refers to the index number shown in the displayed opportunity contact list.
 * The index **must be a positive integer** 1, 2, 3, …​
 * If multiple indices are provided, they must be separated by spaces.
+* Duplicate indices are not allowed.
 
 Examples:
 * `list` followed by `delete 2` deletes the 2nd opportunity contact in the tracker.
@@ -165,6 +166,7 @@ Format: `archive INDEX [MORE_INDICES]...`
 * The index refers to the index number shown in the displayed unarchived / active opportunity contact list.
 * The index **must be a positive integer** 1, 2, 3, …​
 * If multiple indices are provided, they must be separated by spaces.
+* Duplicate indices are not allowed.
 
 Examples:
 * `list` followed by `archive 2` archives the 2nd opportunity contact in the tracker.
@@ -182,6 +184,7 @@ Format: `unarchive INDEX [MORE_INDICES]...`
 * The index refers to the index number shown in the displayed archived opportunity contact list.
 * The index **must be a positive integer** 1, 2, 3, …​
 * If multiple indices are provided, they must be separated by spaces.
+* Duplicate indices are not allowed.
 
 Examples:
 * `list archive` followed by `unarchive 2` unarchives the 2nd archived opportunity contact in the tracker.
