@@ -1,7 +1,6 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_OPPORTUNITIES;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,17 +49,10 @@ public class UnarchiveCommand extends Command {
             throw new CommandException(MESSAGE_NOT_IN_ARCHIVE_VIEW);
         }
 
-        List<Opportunity> fullList = model.getAddressBook().getOpportunityList();
-        List<Opportunity> archivedOpportunitiesList = new ArrayList<>();
-
-        for (Opportunity opportunity : fullList) {
-            if (opportunity.isArchived()) {
-                archivedOpportunitiesList.add(opportunity);
-            }
-        }
+        List<Opportunity> displayedArchivedOpportunities = new ArrayList<>(model.getFilteredOpportunityList());
 
         for (Index targetIndex : targetIndices) {
-            if (targetIndex.getZeroBased() >= archivedOpportunitiesList.size()) {
+            if (targetIndex.getZeroBased() >= displayedArchivedOpportunities.size()) {
                 throw new CommandException(Messages.MESSAGE_INVALID_OPPORTUNITY_DISPLAYED_INDEX);
             }
         }
@@ -73,15 +65,12 @@ public class UnarchiveCommand extends Command {
         StringBuilder unarchivedOpportunities = new StringBuilder();
 
         for (Index targetIndex : sortedIndices) {
-            Opportunity opportunityToUnarchive = archivedOpportunitiesList.get(targetIndex.getZeroBased());
+            Opportunity opportunityToUnarchive = displayedArchivedOpportunities.get(targetIndex.getZeroBased());
             Opportunity unarchivedOpportunity = createUnarchivedOpportunity(opportunityToUnarchive);
 
             model.setOpportunity(opportunityToUnarchive, unarchivedOpportunity);
             unarchivedOpportunities.append(String.format("\n%1$s", Messages.format(unarchivedOpportunity)));
         }
-
-        // Update the filtered list to show only archived opportunities after unarchiving
-        model.updateFilteredOpportunityList(PREDICATE_SHOW_ARCHIVED_OPPORTUNITIES);
 
         return new CommandResult(
                 String.format(MESSAGE_UNARCHIVE_OPPORTUNITY_SUCCESS, unarchivedOpportunities.toString()));
