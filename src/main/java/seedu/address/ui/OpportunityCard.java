@@ -57,6 +57,7 @@ public class OpportunityCard extends UiPart<Region> {
         role.setText(opportunity.getRole().roleName);
         email.setText(opportunity.getEmail().value);
         status.setText(opportunity.getStatus().statusName);
+        status.getStyleClass().setAll("status-badge", getStatusStyleClass(opportunity.getStatus().statusName));
         cycle.setText(opportunity.getCycle().value);
         opportunity.getPhone().ifPresentOrElse(
                 p -> {
@@ -68,5 +69,15 @@ public class OpportunityCard extends UiPart<Region> {
                     phone.setManaged(false);
                 }
         );
+    }
+
+    /**
+     * Returns the CSS style class for the given status name.
+     * The class follows the pattern {@code status-<lowercase>},
+     * e.g. {@code "status-applied"} for {@code "APPLIED"}.
+     * Each returned class has a corresponding rule in {@code DarkTheme.css}.
+     */
+    static String getStatusStyleClass(String statusName) {
+        return "status-" + statusName.toLowerCase();
     }
 }
