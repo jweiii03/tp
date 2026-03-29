@@ -643,7 +643,7 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: Ensure the application has just launched and no mutating commands have been executed.
 
     2. Test case: `undo`
-       Expected: The tracker state remains unchanged. An error message "No more commmands to undo!" is shown in the status box.
+       Expected: The tracker state remains unchanged. An error message "No more commands to undo!" is shown in the status box.
 
 ### Saving data
 
