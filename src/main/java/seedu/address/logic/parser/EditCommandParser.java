@@ -11,6 +11,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditOpportunityDescriptor;
@@ -32,49 +35,112 @@ public class EditCommandParser implements Parser<EditCommand> {
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_EMAIL, PREFIX_CONTACT_ROLE,
                         PREFIX_COMPANY, PREFIX_ROLE, PREFIX_STATUS, PREFIX_CYCLE, PREFIX_PHONE);
 
-        Index index;
+        List<String> errorMessages = new ArrayList<>();
+        Index index = null;
 
         try {
             index = ParserUtil.parseIndex(argMultimap.getPreamble());
         } catch (ParseException pe) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE), pe);
+            errorMessages.add(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_EMAIL, PREFIX_CONTACT_ROLE,
-                PREFIX_COMPANY, PREFIX_ROLE, PREFIX_STATUS, PREFIX_CYCLE, PREFIX_PHONE);
+        try {
+            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_EMAIL, PREFIX_CONTACT_ROLE,
+                    PREFIX_COMPANY, PREFIX_ROLE, PREFIX_STATUS, PREFIX_CYCLE, PREFIX_PHONE);
+        } catch (ParseException pe) {
+            errorMessages.add(pe.getMessage());
+        }
 
         EditOpportunityDescriptor editOpportunityDescriptor = new EditOpportunityDescriptor();
 
         if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
-            editOpportunityDescriptor.setName(ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()));
+            try {
+                editOpportunityDescriptor.setName(
+                        ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()));
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
         }
+
         if (argMultimap.getValue(PREFIX_EMAIL).isPresent()) {
-            editOpportunityDescriptor.setEmail(ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get()));
+            try {
+                editOpportunityDescriptor.setEmail(
+                        ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get()));
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
         }
+
         if (argMultimap.getValue(PREFIX_CONTACT_ROLE).isPresent()) {
-            editOpportunityDescriptor.setContactRole(
-                    ParserUtil.parseContactRole(argMultimap.getValue(PREFIX_CONTACT_ROLE).get()));
+            try {
+                editOpportunityDescriptor.setContactRole(
+                        ParserUtil.parseContactRole(argMultimap.getValue(PREFIX_CONTACT_ROLE).get()));
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
         }
+
         if (argMultimap.getValue(PREFIX_COMPANY).isPresent()) {
-            editOpportunityDescriptor.setCompany(ParserUtil.parseCompany(argMultimap.getValue(PREFIX_COMPANY).get()));
+            try {
+                editOpportunityDescriptor.setCompany(
+                        ParserUtil.parseCompany(argMultimap.getValue(PREFIX_COMPANY).get()));
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
         }
+
         if (argMultimap.getValue(PREFIX_ROLE).isPresent()) {
-            editOpportunityDescriptor.setRole(ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get()));
+            try {
+                editOpportunityDescriptor.setRole(
+                        ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get()));
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
         }
+
         if (argMultimap.getValue(PREFIX_STATUS).isPresent()) {
-            editOpportunityDescriptor.setStatus(ParserUtil.parseStatus(argMultimap.getValue(PREFIX_STATUS).get()));
+            try {
+                editOpportunityDescriptor.setStatus(
+                        ParserUtil.parseStatus(argMultimap.getValue(PREFIX_STATUS).get()));
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
         }
+
         if (argMultimap.getValue(PREFIX_CYCLE).isPresent()) {
-            editOpportunityDescriptor.setCycle(ParserUtil.parseCycle(argMultimap.getValue(PREFIX_CYCLE).get()));
+            try {
+                editOpportunityDescriptor.setCycle(
+                        ParserUtil.parseCycle(argMultimap.getValue(PREFIX_CYCLE).get()));
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
         }
+
         if (argMultimap.getValue(PREFIX_PHONE).isPresent()) {
             String rawPhone = argMultimap.getValue(PREFIX_PHONE).get();
             if (rawPhone.trim().isEmpty()) {
                 // Empty value signals intent to clear the optional phone field
                 editOpportunityDescriptor.setClearPhone(true);
             } else {
-                editOpportunityDescriptor.setPhone(ParserUtil.parsePhone(rawPhone));
+                try {
+                    editOpportunityDescriptor.setPhone(ParserUtil.parsePhone(rawPhone));
+                } catch (ParseException pe) {
+                    errorMessages.add(pe.getMessage());
+                }
             }
+        }
+
+        if (!errorMessages.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < errorMessages.size(); i++) {
+                sb.append(i + 1)
+                        .append(". ")
+                        .append(errorMessages.get(i));
+                if (i < errorMessages.size() - 1) {
+                    sb.append("\n\n");
+                }
+            }
+            throw new ParseException(sb.toString());
         }
 
         if (!editOpportunityDescriptor.isAnyFieldEdited()) {

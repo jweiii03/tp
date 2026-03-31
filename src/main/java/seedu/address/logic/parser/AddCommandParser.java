@@ -10,6 +10,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddCommand;
@@ -39,29 +41,107 @@ public class AddCommandParser implements Parser<AddCommand> {
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_EMAIL, PREFIX_CONTACT_ROLE,
                         PREFIX_COMPANY, PREFIX_ROLE, PREFIX_STATUS, PREFIX_CYCLE, PREFIX_PHONE);
 
+        List<String> errorMessages = new ArrayList<>();
+
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_EMAIL, PREFIX_CONTACT_ROLE,
                 PREFIX_COMPANY, PREFIX_ROLE, PREFIX_STATUS, PREFIX_CYCLE)
                 || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+            errorMessages.add(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_EMAIL, PREFIX_CONTACT_ROLE,
-                PREFIX_COMPANY, PREFIX_ROLE, PREFIX_STATUS, PREFIX_CYCLE, PREFIX_PHONE);
+        try {
+            argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_EMAIL, PREFIX_CONTACT_ROLE,
+                    PREFIX_COMPANY, PREFIX_ROLE, PREFIX_STATUS, PREFIX_CYCLE, PREFIX_PHONE);
+        } catch (ParseException pe) {
+            errorMessages.add(pe.getMessage());
+        }
 
-        Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
-        Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
-        ContactRole contactRole = ParserUtil.parseContactRole(argMultimap.getValue(PREFIX_CONTACT_ROLE).get());
-        Company company = ParserUtil.parseCompany(argMultimap.getValue(PREFIX_COMPANY).get());
-        Role role = ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get());
-        Status status = ParserUtil.parseStatus(argMultimap.getValue(PREFIX_STATUS).get());
-        Cycle cycle = ParserUtil.parseCycle(argMultimap.getValue(PREFIX_CYCLE).get());
+        Name name = null;
+        if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
+            try {
+                name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
+        }
+
+        Email email = null;
+        if (argMultimap.getValue(PREFIX_EMAIL).isPresent()) {
+            try {
+                email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
+        }
+
+        ContactRole contactRole = null;
+        if (argMultimap.getValue(PREFIX_CONTACT_ROLE).isPresent()) {
+            try {
+                contactRole = ParserUtil.parseContactRole(argMultimap.getValue(PREFIX_CONTACT_ROLE).get());
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
+        }
+
+        Company company = null;
+        if (argMultimap.getValue(PREFIX_COMPANY).isPresent()) {
+            try {
+                company = ParserUtil.parseCompany(argMultimap.getValue(PREFIX_COMPANY).get());
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
+        }
+
+        Role role = null;
+        if (argMultimap.getValue(PREFIX_ROLE).isPresent()) {
+            try {
+                role = ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get());
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
+        }
+
+        Status status = null;
+        if (argMultimap.getValue(PREFIX_STATUS).isPresent()) {
+            try {
+                status = ParserUtil.parseStatus(argMultimap.getValue(PREFIX_STATUS).get());
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
+        }
+
+        Cycle cycle = null;
+        if (argMultimap.getValue(PREFIX_CYCLE).isPresent()) {
+            try {
+                cycle = ParserUtil.parseCycle(argMultimap.getValue(PREFIX_CYCLE).get());
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
+        }
 
         Phone phone = null;
         if (argMultimap.getValue(PREFIX_PHONE).isPresent()) {
-            phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
+            try {
+                phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
+            } catch (ParseException pe) {
+                errorMessages.add(pe.getMessage());
+            }
         }
 
-        //Newly added opportunities are not archived by default
+        if (!errorMessages.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < errorMessages.size(); i++) {
+                sb.append(i + 1)
+                        .append(". ")
+                        .append(errorMessages.get(i));
+                if (i < errorMessages.size() - 1) {
+                    sb.append("\n\n");
+                }
+            }
+            throw new ParseException(sb.toString());
+        }
+
+        // Newly added opportunities are not archived by default
         Opportunity opportunity = new Opportunity(name, email, contactRole, company, role, status, cycle, false, phone);
 
         return new AddCommand(opportunity);
