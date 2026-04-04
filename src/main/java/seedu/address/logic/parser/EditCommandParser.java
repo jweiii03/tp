@@ -78,6 +78,7 @@ public class EditCommandParser implements Parser<EditCommand> {
                 errorMessages.add(pe.getMessage());
             }
         }
+
         if (argMultimap.getValue(PREFIX_EMAIL).isPresent()) {
             try {
                 editOpportunityDescriptor.setEmail(
@@ -86,6 +87,7 @@ public class EditCommandParser implements Parser<EditCommand> {
                 errorMessages.add(pe.getMessage());
             }
         }
+
         if (argMultimap.getValue(PREFIX_CONTACT_ROLE).isPresent()) {
             try {
                 editOpportunityDescriptor.setContactRole(
@@ -94,6 +96,7 @@ public class EditCommandParser implements Parser<EditCommand> {
                 errorMessages.add(pe.getMessage());
             }
         }
+
         if (argMultimap.getValue(PREFIX_COMPANY).isPresent()) {
             try {
                 editOpportunityDescriptor.setCompany(
@@ -102,6 +105,7 @@ public class EditCommandParser implements Parser<EditCommand> {
                 errorMessages.add(pe.getMessage());
             }
         }
+
         if (argMultimap.getValue(PREFIX_ROLE).isPresent()) {
             try {
                 editOpportunityDescriptor.setRole(
@@ -110,6 +114,7 @@ public class EditCommandParser implements Parser<EditCommand> {
                 errorMessages.add(pe.getMessage());
             }
         }
+
         if (argMultimap.getValue(PREFIX_STATUS).isPresent()) {
             try {
                 editOpportunityDescriptor.setStatus(
@@ -118,6 +123,7 @@ public class EditCommandParser implements Parser<EditCommand> {
                 errorMessages.add(pe.getMessage());
             }
         }
+
         if (argMultimap.getValue(PREFIX_CYCLE).isPresent()) {
             try {
                 editOpportunityDescriptor.setCycle(
@@ -126,6 +132,7 @@ public class EditCommandParser implements Parser<EditCommand> {
                 errorMessages.add(pe.getMessage());
             }
         }
+        
         if (argMultimap.getValue(PREFIX_PHONE).isPresent()) {
             String rawPhone = argMultimap.getValue(PREFIX_PHONE).get();
             if (rawPhone.trim().isEmpty()) {

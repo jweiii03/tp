@@ -125,7 +125,6 @@ public class Opportunity {
         return new Opportunity(name, email, contactRole, company, role, status, cycle, false, phone);
     }
 
-
     /**
      * Returns true if both opportunities have the same identity and data
      * fields. This defines a stronger notion of equality between two
