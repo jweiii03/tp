@@ -112,7 +112,7 @@ public class LogicManagerTest {
     }
 
     @Test
-    public void isArchiveView_afterListArchiveCommand_returnsTrue() throws Exception {
+    public void isArchiveView_afterListArchive_returnsTrue() throws Exception {
         // Simulate user typing "list archive"
         logic.execute(ListCommand.COMMAND_WORD + " archive");
         assertTrue(logic.isArchiveView());

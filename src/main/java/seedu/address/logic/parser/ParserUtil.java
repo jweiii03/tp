@@ -171,6 +171,7 @@ public class ParserUtil {
      * @throws ParseException if the errorMessages list is not empty.
      */
     public static void throwCombinedParseException(List<String> errorMessages) throws ParseException {
+        requireNonNull(errorMessages);
         if (!errorMessages.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < errorMessages.size(); i++) {

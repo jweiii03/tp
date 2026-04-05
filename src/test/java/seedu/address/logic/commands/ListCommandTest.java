@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showOpportunityAtIndex;
+import static seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_OPPORTUNITIES;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_OPPORTUNITY;
 import static seedu.address.testutil.TypicalOpportunities.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalOpportunities.getTypicalOpportunities;
@@ -15,6 +16,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.opportunity.Opportunity;
+import seedu.address.testutil.OpportunityBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListCommand.
@@ -51,32 +53,35 @@ public class ListCommandTest {
     public void execute_emptyList_showsEmptyMessage() {
         Model emptyModel = new ModelManager(new AddressBook(), new UserPrefs());
         Model expectedEmptyModel = new ModelManager(new AddressBook(), new UserPrefs());
-        assertCommandSuccess(new ListCommand(false), emptyModel, ListCommand.MESSAGE_EMPTY_ACTIVE, expectedEmptyModel);
+        assertCommandSuccess(new ListCommand(false), emptyModel,
+                                    ListCommand.MESSAGE_EMPTY_ACTIVE, expectedEmptyModel);
     }
 
     @Test
     public void execute_noArchivedOpportunities_showsEmptyMessage() {
         expectedModel.setArchiveView(true);
-        expectedModel.updateFilteredOpportunityList(seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_OPPORTUNITIES);
-        assertCommandSuccess(new ListCommand(true), model, ListCommand.MESSAGE_EMPTY_ARCHIVED, expectedModel);
+        expectedModel.updateFilteredOpportunityList(PREDICATE_SHOW_ARCHIVED_OPPORTUNITIES);
+        assertCommandSuccess(new ListCommand(true), model,
+                                    ListCommand.MESSAGE_EMPTY_ARCHIVED, expectedModel);
     }
 
     @Test
     public void execute_someArchivedOpportunities_showsCorrectCount() {
         AddressBook ab = new AddressBook();
-        Opportunity archived1 = new seedu.address.testutil.OpportunityBuilder().withName("Alice Tan")
-                .withCompany("Stripe").withRole("SWE Intern").withArchived(true).build();
-        Opportunity archived2 = new seedu.address.testutil.OpportunityBuilder().withName("Bob Lim")
+        Opportunity archived1 = new OpportunityBuilder().withName("Alice Tan")
+                .withCompany("Stripe").withRole("SWE Intern")
+                .withArchived(true).build();
+        Opportunity archived2 = new OpportunityBuilder().withName("Bob Lim")
                 .withEmail("bob@tiktok.com").withCompany("TikTok")
                 .withRole("Backend Intern").withArchived(true).build();
+
         ab.addOpportunity(archived1);
         ab.addOpportunity(archived2);
 
         Model testModel = new ModelManager(ab, new UserPrefs());
         Model expectedTestModel = new ModelManager(ab, new UserPrefs());
         expectedTestModel.setArchiveView(true);
-        expectedTestModel.updateFilteredOpportunityList(
-                            seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_OPPORTUNITIES);
+        expectedTestModel.updateFilteredOpportunityList(PREDICATE_SHOW_ARCHIVED_OPPORTUNITIES);
 
         assertCommandSuccess(new ListCommand(true), testModel,
                             String.format(ListCommand.MESSAGE_SUCCESS_ARCHIVED, 2,

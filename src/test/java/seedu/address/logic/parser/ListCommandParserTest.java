@@ -19,7 +19,7 @@ public class ListCommandParserTest {
     }
 
     @Test
-    public void parse_archiveArg_returnsListArchiveCommand() {
+    public void parse_archiveArg_returnsArchiveListCommand() {
         // EP (Valid Partition 2): The exact string "archive" (with or without surrounding spaces)
         assertParseSuccess(parser, "archive", new ListCommand(true));
         assertParseSuccess(parser, " archive  ", new ListCommand(true));
