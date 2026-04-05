@@ -35,6 +35,7 @@ public class ListCommand extends Command {
     public static final String MESSAGE_SUCCESS_ACTIVE = "Showing %1$d %2$s.";
 
     public static final String MESSAGE_EMPTY_ACTIVE = "No opportunities yet. Add one with: "
+            + AddCommand.COMMAND_WORD + " "
             + PREFIX_NAME + "NAME "
             + PREFIX_EMAIL + "EMAIL "
             + PREFIX_CONTACT_ROLE + "CONTACT_ROLE "

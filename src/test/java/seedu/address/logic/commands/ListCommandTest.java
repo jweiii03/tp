@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showOpportunityAtIndex;
 import static seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_OPPORTUNITIES;
@@ -115,4 +116,8 @@ public class ListCommandTest {
                                 Messages.getOpportunityWord(1)), expectedFilteredModel);
     }
 
+    @Test
+    public void messageEmptyActive_containsAddCommandWord() {
+        assertTrue(ListCommand.MESSAGE_EMPTY_ACTIVE.contains("Add one with: " + AddCommand.COMMAND_WORD + " "));
+    }
 }
