@@ -38,11 +38,11 @@ public class FindCommandParser implements Parser<FindCommand> {
         boolean searchArchived = archivedValue.isPresent();
         boolean archiveHasValue = archivedValue.isPresent() && !archivedValue.get().trim().isEmpty();
 
-        if (searchArchived && !archiveHasValue) {
+        List<String> preambleKeywords = splitKeywords(argMultimap.getPreamble());
+
+        if (searchArchived && !archiveHasValue && !preambleKeywords.isEmpty()) {
             throw new ParseException(MESSAGE_ARCHIVE_MISSING_VALUE);
         }
-
-        List<String> preambleKeywords = splitKeywords(argMultimap.getPreamble());
 
         if (archiveHasValue && !preambleKeywords.isEmpty()) {
             throw new ParseException(MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS);

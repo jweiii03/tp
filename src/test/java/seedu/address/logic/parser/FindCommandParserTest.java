@@ -27,6 +27,7 @@ public class FindCommandParserTest {
         assertParseFailure(parser, " c/ ", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         assertParseFailure(parser, " Alice c/ ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " a/ ", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
     }
 
     @Test
@@ -65,6 +66,8 @@ public class FindCommandParserTest {
 
         assertParseSuccess(parser, "a/Jan", expectedArchivedNameCommand);
         assertParseSuccess(parser, "a/ Jan", expectedArchivedNameCommand);
+        assertParseSuccess(parser, " a/ c/Visa ",
+                new FindCommand(new OpportunityContainsSubstringPredicate(List.of(), List.of("Visa")), true));
         assertParseSuccess(parser, "a/Alice c/Tik", expectedArchivedNameAndCompanyCommand);
         assertParseSuccess(parser, " \n a/ \t Alice \t c/Tik  ", expectedArchivedNameAndCompanyCommand);
         assertParseSuccess(parser, "c/Visa a/Jan",
@@ -73,10 +76,8 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_archiveMissingValue_throwsParseException() {
-        assertParseFailure(parser, "a/", MESSAGE_ARCHIVE_MISSING_VALUE);
-        assertParseFailure(parser, " a/ ", MESSAGE_ARCHIVE_MISSING_VALUE);
         assertParseFailure(parser, "google a/", MESSAGE_ARCHIVE_MISSING_VALUE);
-        assertParseFailure(parser, " a/ c/Visa ", MESSAGE_ARCHIVE_MISSING_VALUE);
+        assertParseFailure(parser, "Jane Lim a/", MESSAGE_ARCHIVE_MISSING_VALUE);
     }
 
     @Test
