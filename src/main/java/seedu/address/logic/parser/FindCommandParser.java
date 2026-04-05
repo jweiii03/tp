@@ -18,9 +18,12 @@ import seedu.address.model.opportunity.OpportunityContainsSubstringPredicate;
  */
 public class FindCommandParser implements Parser<FindCommand> {
 
+    public static final String MESSAGE_ARCHIVE_MISSING_VALUE =
+            "The a/ prefix requires a keyword. Use 'find a/KEYWORD' to search archived opportunities.";
+
     public static final String MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS =
             "Keywords cannot appear both before and after a/.\n"
-            + "Use 'find a/KEYWORD' or 'find KEYWORD a/' to search archived opportunities.";
+            + "Use 'find a/KEYWORD' to search archived opportunities.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand
@@ -34,6 +37,10 @@ public class FindCommandParser implements Parser<FindCommand> {
         Optional<String> archivedValue = argMultimap.getValue(PREFIX_ARCHIVE);
         boolean searchArchived = archivedValue.isPresent();
         boolean archiveHasValue = archivedValue.isPresent() && !archivedValue.get().trim().isEmpty();
+
+        if (searchArchived && !archiveHasValue) {
+            throw new ParseException(MESSAGE_ARCHIVE_MISSING_VALUE);
+        }
 
         List<String> preambleKeywords = splitKeywords(argMultimap.getPreamble());
 
