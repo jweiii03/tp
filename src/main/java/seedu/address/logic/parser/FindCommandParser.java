@@ -18,10 +18,9 @@ import seedu.address.model.opportunity.OpportunityContainsSubstringPredicate;
  */
 public class FindCommandParser implements Parser<FindCommand> {
 
-    public static final String MESSAGE_ARCHIVE_FLAG_WITH_VALUE =
-            "The a/ flag cannot have a value.\n"
-            + "Use 'find KEYWORD a/' to search archived opportunities, "
-            + "or 'find KEYWORD' to search active opportunities.";
+    public static final String MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS =
+            "Keywords cannot appear both before and after a/.\n"
+            + "Use 'find a/KEYWORD' or 'find KEYWORD a/' to search archived opportunities.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand
@@ -33,12 +32,19 @@ public class FindCommandParser implements Parser<FindCommand> {
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_ARCHIVE, PREFIX_COMPANY);
 
         Optional<String> archivedValue = argMultimap.getValue(PREFIX_ARCHIVE);
-        if (archivedValue.isPresent() && !archivedValue.get().trim().isEmpty()) {
-            throw new ParseException(MESSAGE_ARCHIVE_FLAG_WITH_VALUE);
-        }
         boolean searchArchived = archivedValue.isPresent();
+        boolean archiveHasValue = archivedValue.isPresent() && !archivedValue.get().trim().isEmpty();
 
-        List<String> nameKeywords = new ArrayList<>(splitKeywords(argMultimap.getPreamble()));
+        List<String> preambleKeywords = splitKeywords(argMultimap.getPreamble());
+
+        if (archiveHasValue && !preambleKeywords.isEmpty()) {
+            throw new ParseException(MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS);
+        }
+
+        List<String> nameKeywords = archiveHasValue
+                ? new ArrayList<>(splitKeywords(archivedValue.get()))
+                : new ArrayList<>(preambleKeywords);
+
         Optional<String> companyValue = argMultimap.getValue(PREFIX_COMPANY);
         List<String> companyKeywords = companyValue.map(this::splitKeywords).orElse(List.of());
 

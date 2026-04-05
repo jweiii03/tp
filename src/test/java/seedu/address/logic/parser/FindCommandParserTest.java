@@ -6,7 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ARCHIVE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_COMPANY;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
-import static seedu.address.logic.parser.FindCommandParser.MESSAGE_ARCHIVE_FLAG_WITH_VALUE;
+import static seedu.address.logic.parser.FindCommandParser.MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,18 +69,28 @@ public class FindCommandParserTest {
         FindCommand expectedArchivedMultiNameCommand =
                 new FindCommand(new OpportunityContainsSubstringPredicate(List.of("Jane", "Lim")), true);
 
+        // keyword as a/ value
+        assertParseSuccess(parser, "a/Jan", expectedArchivedNameCommand);
+        assertParseSuccess(parser, "a/ Jan", expectedArchivedNameCommand);
+        // keyword in preamble, a/ as valueless flag
         assertParseSuccess(parser, "Jan a/", expectedArchivedNameCommand);
-        assertParseSuccess(parser, " a/ c/Visa ", expectedArchivedCompanyCommand);
-        assertParseSuccess(parser, " Alice a/ c/Tik", expectedArchivedNameAndCompanyCommand);
         assertParseSuccess(parser, "Jane Lim a/", expectedArchivedMultiNameCommand);
+        // company-only search with a/
+        assertParseSuccess(parser, " a/ c/Visa ", expectedArchivedCompanyCommand);
+        // name via a/ value with company prefix
+        assertParseSuccess(parser, "a/Alice c/Tik", expectedArchivedNameAndCompanyCommand);
+        assertParseSuccess(parser, " \n a/ \t Alice \t c/Tik  ", expectedArchivedNameAndCompanyCommand);
+        // name in preamble with company and a/ flag
+        assertParseSuccess(parser, " Alice a/ c/Tik", expectedArchivedNameAndCompanyCommand);
+        // a/ after c/
+        assertParseSuccess(parser, "c/Visa a/Jan",
+                new FindCommand(new OpportunityContainsSubstringPredicate(List.of("Jan"), List.of("Visa")), true));
     }
 
     @Test
-    public void parse_archiveFlagWithValue_throwsParseException() {
-        assertParseFailure(parser, "a/Jan", MESSAGE_ARCHIVE_FLAG_WITH_VALUE);
-        assertParseFailure(parser, "a/ Jan", MESSAGE_ARCHIVE_FLAG_WITH_VALUE);
-        assertParseFailure(parser, "Jane a/Lim", MESSAGE_ARCHIVE_FLAG_WITH_VALUE);
-        assertParseFailure(parser, "c/Visa a/Jan", MESSAGE_ARCHIVE_FLAG_WITH_VALUE);
+    public void parse_ambiguousArchiveKeywords_throwsParseException() {
+        assertParseFailure(parser, "alice a/bob", MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS);
+        assertParseFailure(parser, "Jane a/Lim", MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS);
     }
 
     @Test
