@@ -40,6 +40,12 @@ public class EmailTest {
     }
 
     @Test
+    public void isValidEmail_consecutiveDots_returnsFalse() {
+        assertFalse(Email.isValidEmail("user..name@example.com"));
+        assertFalse(Email.isValidEmail("a..b@example.com"));
+    }
+
+    @Test
     public void isValidEmail_missingAtSign_returnsFalse() {
         assertFalse(Email.isValidEmail("userexample.com"));
     }
