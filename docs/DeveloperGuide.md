@@ -31,6 +31,15 @@ Refer to the guide [_Setting up and getting started_](SettingUp.md).
 
 The ***Architecture Diagram*** given above explains the high-level design of the App.
 
+<box type="info" seamless>
+
+**Note:** InternTrack is built on AB3 and still retains some legacy internal class names such as
+`AddressBook`, `AddressBookParser`, `ReadOnlyAddressBook`, and `VersionedAddressBook`.
+These are implementation names. Explanations in this guide use InternTrack terms such as opportunity contacts/records,
+contacts, companies, roles, and statuses.
+
+</box>
+
 Given below is a quick overview of main components and how they interact with each other.
 
 **Main components of the architecture**
@@ -123,7 +132,7 @@ How the parsing works:
 
 The `Model` component,
 
-* stores tracker data i.e., all `Opportunity` objects (which are contained in a `UniqueOpportunityList` object).
+* stores InternTrack data internally as `Opportunity` objects (which are contained in a `UniqueOpportunityList` object).
 * stores the currently 'selected' `Opportunity` objects (e.g., results of a search query or an archive filter) as a separate *filtered* list which is exposed to outsiders as an unmodifiable `ObservableList<Opportunity>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components).
@@ -142,7 +151,7 @@ The `Model` component,
 <puml src="diagrams/StorageClassDiagram.puml" width="650" />
 
 The `Storage` component,
-* can save tracker data and user preference data in JSON format, and read them back into corresponding objects.
+* can save InternTrack data to JSON storage files such as `addressbook.json`, and read them back into corresponding objects together with user preference data.
 * inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
