@@ -787,6 +787,16 @@ testers are expected to do more *exploratory* testing.
    1. Test case: `find a/`<br>
       Expected: No search is performed. An invalid command format error is shown because archive search still requires at least one name or company keyword.<br><br>
 
+1. Rejecting keywords placed before `a/`
+
+   1. Test case: `find google a/`<br>
+      Expected: No search is performed. An error is shown indicating that keywords must follow `a/` directly, not precede it.<br><br>
+
+1. Rejecting keywords on both sides of `a/`
+
+   1. Test case: `find alice a/bob`<br>
+      Expected: No search is performed. An error is shown indicating that keywords cannot appear both before and after `a/`.<br><br>
+
 1. Rejecting an invalid find command
 
    1. Test case: `find`<br>

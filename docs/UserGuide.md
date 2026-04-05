@@ -129,9 +129,9 @@ Examples:
 ### Locating opportunity contacts: `find`
 
 Finds opportunity contacts whose names contain all of the given keywords, optionally filtered by company.
-By default, `find` searches unarchived opportunities. Add `a/` to search archived opportunities instead.
+By default, `find` searches unarchived opportunities. Use `a/KEYWORD` or `a/ c/COMPANY` to search archived opportunities instead.
 
-Format: `find [a/] [NAME_KEYWORD [MORE_NAME_KEYWORDS]...] [c/COMPANY_KEYWORD [MORE_COMPANY_KEYWORDS]...]`
+Format: `find [a/[NAME_KEYWORD [MORE_NAME_KEYWORDS]...]] [c/COMPANY_KEYWORD [MORE_COMPANY_KEYWORDS]...]`
 
 * The search is case-insensitive. e.g. `jan` will match `Jane`
 * Partial words are matched for both name and company. e.g. `find jan c/Tik` matches `Jane @ TikTok`
@@ -139,7 +139,7 @@ Format: `find [a/] [NAME_KEYWORD [MORE_NAME_KEYWORDS]...] [c/COMPANY_KEYWORD [MO
 * If a company filter is provided, only contacts whose company matches all given company keywords are returned.
 * If both name keywords and a company filter are provided, both conditions must match.
 * You can search by company only by leaving the name blank. e.g. `find c/Visa`
-* Use `a/` to search archived opportunities instead of the active list.
+* Use `a/KEYWORD` to search archived opportunities by name, or `a/ c/COMPANY` to search by company only.
 * `a/` can be followed by a space or attached directly to the first name keyword. e.g. `find a/ jan` and `find a/jan` are both valid. Name keywords must follow `a/`, not precede it. e.g. `find jan a/` is invalid.
 * `find`, `find c/`, `find a/`, `find google a/`, and `find a/ c/` are invalid because at least one search term must be provided after `a/` or as a standalone keyword.
 
