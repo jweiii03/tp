@@ -10,9 +10,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Company {
 
     public static final String MESSAGE_CONSTRAINTS =
-        "Company names must be 1-60 characters and can\n"
-            + "only contain letters, numbers, spaces, and common symbols like &, ., -, ,, (, ), ', / \n"
-            + "and must not be blank";
+        "Company names must be 1-60 characters, must not be blank, and can only contain "
+            + "letters, numbers, spaces, and the special characters: & . - , ( ) '";
 
     public static final int MIN_LENGTH = 1;
     public static final int MAX_LENGTH = 60;
@@ -21,7 +20,7 @@ public class Company {
      * The first character of the company name must not be a whitespace,
      * otherwise " " (a blank string) becomes a valid input.
      */
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} &.,()'\\-/]*";
+    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} &.,()'\\-]*";
 
     public final String companyName;
 

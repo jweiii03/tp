@@ -18,6 +18,15 @@ import seedu.address.model.opportunity.OpportunityContainsSubstringPredicate;
  */
 public class FindCommandParser implements Parser<FindCommand> {
 
+    public static final String MESSAGE_ARCHIVE_MISSING_VALUE =
+            "When using a/, keywords must appear after it (optionally separated by whitespace). "
+            + "Use 'find a/KEYWORD' or 'find a/ KEYWORD' to search archived by name, "
+            + "or 'find a/ c/COMPANY' to search archived by company.";
+
+    public static final String MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS =
+            "Keywords cannot appear both before and after a/.\n"
+            + "Use 'find a/KEYWORD' or 'find a/ KEYWORD' to search archived opportunities.";
+
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand
      * and returns a FindCommand object for execution.
@@ -29,9 +38,22 @@ public class FindCommandParser implements Parser<FindCommand> {
 
         Optional<String> archivedValue = argMultimap.getValue(PREFIX_ARCHIVE);
         boolean searchArchived = archivedValue.isPresent();
+        boolean archiveHasValue = archivedValue.isPresent() && !archivedValue.get().trim().isEmpty();
 
-        List<String> nameKeywords = new ArrayList<>(splitKeywords(argMultimap.getPreamble()));
-        archivedValue.ifPresent(value -> nameKeywords.addAll(splitKeywords(value)));
+        List<String> preambleKeywords = splitKeywords(argMultimap.getPreamble());
+
+        if (searchArchived && !archiveHasValue && !preambleKeywords.isEmpty()) {
+            throw new ParseException(MESSAGE_ARCHIVE_MISSING_VALUE);
+        }
+
+        if (archiveHasValue && !preambleKeywords.isEmpty()) {
+            throw new ParseException(MESSAGE_AMBIGUOUS_ARCHIVE_KEYWORDS);
+        }
+
+        List<String> nameKeywords = archiveHasValue
+                ? new ArrayList<>(splitKeywords(archivedValue.get()))
+                : new ArrayList<>(preambleKeywords);
+
         Optional<String> companyValue = argMultimap.getValue(PREFIX_COMPANY);
         List<String> companyKeywords = companyValue.map(this::splitKeywords).orElse(List.of());
 

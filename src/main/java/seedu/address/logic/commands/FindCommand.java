@@ -21,16 +21,13 @@ public class FindCommand extends Command {
     public static final String COMMAND_WORD = "find";
     public static final String ARCHIVED_FLAG = "a/";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all opportunities whose names contain all of "
-            + "the specified name keywords (case-insensitive). By default, only unarchived opportunities are "
-            + "searched. Add " + ARCHIVED_FLAG + " to search archived opportunities instead. You can optionally add "
-            + "a company filter with c/.\n"
-            + "Parameters: [" + ARCHIVED_FLAG + "] [NAME_KEYWORD [MORE_NAME_KEYWORDS]...] "
-            + "[c/COMPANY_KEYWORD [MORE_COMPANY_KEYWORDS]...]\n"
-            + "Examples: " + COMMAND_WORD + " alice bob\n"
-            + "          " + COMMAND_WORD + " a/jan\n"
-            + "          " + COMMAND_WORD + " alice c/stripe\n"
-            + "          " + COMMAND_WORD + " c/tiktok";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds opportunities by name and/or company.\n"
+            + "Parameters: [" + ARCHIVED_FLAG + "[NAME_KEYWORD...]] [c/COMPANY_KEYWORD...]\n"
+            + "  - Active search: find NAME (e.g. find alice)\n"
+            + "  - Archived search: find a/NAME (e.g. find a/jan)\n"
+            + "  - Company filter: find c/COMPANY (e.g. find c/stripe)\n"
+            + "  - Archived + company only: find a/ c/COMPANY (e.g. find a/ c/stripe)\n"
+            + "Note: name keywords must follow a/, not precede it (e.g. 'find a/jan', not 'find jan a/').";
 
     private final OpportunityContainsSubstringPredicate predicate;
     private final boolean searchArchived;
