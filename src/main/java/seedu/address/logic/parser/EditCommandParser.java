@@ -80,91 +80,91 @@ public class EditCommandParser implements Parser<EditCommand> {
         parseAndSetPhone(argMultimap, editOpportunityDescriptor, errorMessages);
     }
 
-    private void parseAndSetName(ArgumentMultimap argMultimap, EditOpportunityDescriptor d,
+    private void parseAndSetName(ArgumentMultimap argMultimap, EditOpportunityDescriptor descriptor,
                                  List<String> errorMessages) {
         if (!argMultimap.getValue(PREFIX_NAME).isPresent()) {
             return;
         }
         try {
-            d.setName(ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()));
+            descriptor.setName(ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()));
         } catch (ParseException pe) {
             errorMessages.add(pe.getMessage());
         }
     }
 
-    private void parseAndSetEmail(ArgumentMultimap argMultimap, EditOpportunityDescriptor d,
+    private void parseAndSetEmail(ArgumentMultimap argMultimap, EditOpportunityDescriptor descriptor,
                                   List<String> errorMessages) {
         if (!argMultimap.getValue(PREFIX_EMAIL).isPresent()) {
             return;
         }
         try {
-            d.setEmail(ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get()));
+            descriptor.setEmail(ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get()));
         } catch (ParseException pe) {
             errorMessages.add(pe.getMessage());
         }
     }
 
-    private void parseAndSetContactRole(ArgumentMultimap argMultimap, EditOpportunityDescriptor d,
+    private void parseAndSetContactRole(ArgumentMultimap argMultimap, EditOpportunityDescriptor descriptor,
                                         List<String> errorMessages) {
         if (!argMultimap.getValue(PREFIX_CONTACT_ROLE).isPresent()) {
             return;
         }
         try {
-            d.setContactRole(ParserUtil.parseContactRole(argMultimap.getValue(PREFIX_CONTACT_ROLE).get()));
+            descriptor.setContactRole(ParserUtil.parseContactRole(argMultimap.getValue(PREFIX_CONTACT_ROLE).get()));
         } catch (ParseException pe) {
             errorMessages.add(pe.getMessage());
         }
     }
 
-    private void parseAndSetCompany(ArgumentMultimap argMultimap, EditOpportunityDescriptor d,
+    private void parseAndSetCompany(ArgumentMultimap argMultimap, EditOpportunityDescriptor descriptor,
                                     List<String> errorMessages) {
         if (!argMultimap.getValue(PREFIX_COMPANY).isPresent()) {
             return;
         }
         try {
-            d.setCompany(ParserUtil.parseCompany(argMultimap.getValue(PREFIX_COMPANY).get()));
+            descriptor.setCompany(ParserUtil.parseCompany(argMultimap.getValue(PREFIX_COMPANY).get()));
         } catch (ParseException pe) {
             errorMessages.add(pe.getMessage());
         }
     }
 
-    private void parseAndSetRole(ArgumentMultimap argMultimap, EditOpportunityDescriptor d,
+    private void parseAndSetRole(ArgumentMultimap argMultimap, EditOpportunityDescriptor descriptor,
                                  List<String> errorMessages) {
         if (!argMultimap.getValue(PREFIX_ROLE).isPresent()) {
             return;
         }
         try {
-            d.setRole(ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get()));
+            descriptor.setRole(ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get()));
         } catch (ParseException pe) {
             errorMessages.add(pe.getMessage());
         }
     }
 
-    private void parseAndSetStatus(ArgumentMultimap argMultimap, EditOpportunityDescriptor d,
+    private void parseAndSetStatus(ArgumentMultimap argMultimap, EditOpportunityDescriptor descriptor,
                                    List<String> errorMessages) {
         if (!argMultimap.getValue(PREFIX_STATUS).isPresent()) {
             return;
         }
         try {
-            d.setStatus(ParserUtil.parseStatus(argMultimap.getValue(PREFIX_STATUS).get()));
+            descriptor.setStatus(ParserUtil.parseStatus(argMultimap.getValue(PREFIX_STATUS).get()));
         } catch (ParseException pe) {
             errorMessages.add(pe.getMessage());
         }
     }
 
-    private void parseAndSetCycle(ArgumentMultimap argMultimap, EditOpportunityDescriptor d,
+    private void parseAndSetCycle(ArgumentMultimap argMultimap, EditOpportunityDescriptor descriptor,
                                   List<String> errorMessages) {
         if (!argMultimap.getValue(PREFIX_CYCLE).isPresent()) {
             return;
         }
         try {
-            d.setCycle(ParserUtil.parseCycle(argMultimap.getValue(PREFIX_CYCLE).get()));
+            descriptor.setCycle(ParserUtil.parseCycle(argMultimap.getValue(PREFIX_CYCLE).get()));
         } catch (ParseException pe) {
             errorMessages.add(pe.getMessage());
         }
     }
 
-    private void parseAndSetPhone(ArgumentMultimap argMultimap, EditOpportunityDescriptor d,
+    private void parseAndSetPhone(ArgumentMultimap argMultimap, EditOpportunityDescriptor descriptor,
                                   List<String> errorMessages) {
         if (!argMultimap.getValue(PREFIX_PHONE).isPresent()) {
             return;
@@ -172,10 +172,10 @@ public class EditCommandParser implements Parser<EditCommand> {
         String rawPhone = argMultimap.getValue(PREFIX_PHONE).get();
         if (rawPhone.trim().isEmpty()) {
             // Empty value signals intent to clear the optional phone field
-            d.setClearPhone(true);
+            descriptor.setClearPhone(true);
         } else {
             try {
-                d.setPhone(ParserUtil.parsePhone(rawPhone));
+                descriptor.setPhone(ParserUtil.parsePhone(rawPhone));
             } catch (ParseException pe) {
                 errorMessages.add(pe.getMessage());
             }
