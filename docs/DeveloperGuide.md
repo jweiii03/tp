@@ -271,22 +271,33 @@ The `Name` and `ContactRole` fields accept a wide range of punctuation marks bec
 3. **Avoiding feature flaws**: Blocking these characters would constitute overzealous input validation, potentially flagged as a usability issue
 
 **Allowed characters:**
-* **Name field**: Alphabetic characters, digits, spaces, and punctuation: `'` `-` `.` `,` `(` `)`
-  * Examples: `Dr. Mary-Anne O'Connor, Ph.D.`, `李明 (Li Ming)`
+* **Name field**: Alphabetic characters, digits, spaces, and punctuation: `'` `-` `.` `,` `(` `)` `&`
+  * Can start with any allowed character (including punctuation) to support placeholder values
+  * Examples: `Dr. Mary-Anne O'Connor, Ph.D.`, `李明 (Li Ming)`, `R&D Team`, `...` (placeholder), `(TBD)`
 * **ContactRole field**: Alphanumeric characters, spaces, and punctuation: `-` `'` `.` `,` `(` `)` `&`
-  * Examples: `Sr. VP, R&D (Mobile & Web)`, `Director's Assistant`
+  * Can start with any allowed character (including punctuation) to support placeholder values
+  * Examples: `Sr. VP, R&D (Mobile & Web)`, `Director's Assistant`, `...` (placeholder), `(TBD)`
+
+**Rationale for allowing punctuation at the start:**
+
+Users may add opportunities before gathering complete contact information. They should be able to use placeholder values like `"..."`, `"(TBD)"`, or `"???"` for unknown names or roles, then update these fields later when the information becomes available. Preventing this would limit legitimate use cases and constitute overzealous validation.
+
+**Validation safety:**
+- Empty strings and whitespace-only strings are still prevented through trim() and length validation
+- All characters allowed at the start are already permitted in the middle of the string
+- Length constraints (1-60 for Name, 1-50 for ContactRole) ensure meaningful input
 
 **Rationale for blocking forward slash (`/`):**
 
 The forward slash character is specifically blocked in both fields because:
 1. **CLI prefix delimiter**: InternTrack uses `/` as the prefix delimiter (e.g., `n/`, `cr/`, `c/`)
-2. **Parsing ambiguity**: A value like `SWE/ML` preceded by whitespace could be misinterpreted as two separate command prefixes
+2. **Known-prefix edge cases**: The parser only recognizes the prefixes pattern and are preceded by whitespace (for example, `e/` or `cr/`). Blocking `/` avoids field values that could accidentally resemble such prefix boundaries
 3. **Legitimate technical constraint**: This restriction is based on a real parsing concern, not an arbitrary preference
 4. **Available alternatives**: Users can express the same meaning using hyphens (`SWE-ML`) or parentheses (`SWE (ML)`)
 
-The `ArgumentTokenizer` class requires a space before a prefix to recognize it (see `findPrefixPosition()` method). While this mitigates some risk, blocking `/` entirely provides a clear separation between prefixes and field values, preventing edge cases and maintaining parser simplicity.
+The `ArgumentTokenizer` class requires a space before a prefix to recognize it (see `findPrefixPosition()` method), so a value like `SWE/ML` on its own is not treated as multiple prefixes. However, disallowing `/` still keeps field values clearly separated from whitespace-prefixed known prefixes, reducing edge cases and maintaining parser simplicity.
 
-**Design decision:** We prefer to be permissive with harmless characters while maintaining strict boundaries on the one character (`/`) that genuinely conflicts with our CLI syntax. This strikes a balance between user flexibility and technical correctness.
+**Design decision:** We prefer to be permissive with harmless characters while maintaining strict boundaries on the one character (`/`) that interacts directly with our CLI prefix syntax. This strikes a balance between user flexibility and technical correctness.
 
 
 --------------------------------------------------------------------------------------------------------------------

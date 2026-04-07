@@ -458,5 +458,84 @@ public class AddCommandParserTest {
                         + CYCLE_DESC_BOB,
                 ContactRole.MESSAGE_CONSTRAINTS);
     }
+
+    @Test
+    public void parse_nameWithPlaceholder_success() {
+        // name with ellipsis placeholder
+        Opportunity expectedOpportunity = new OpportunityBuilder(BOB)
+                .withName("...")
+                .build();
+        assertParseSuccess(parser,
+                " n/..." + EMAIL_DESC_BOB + CONTACT_ROLE_DESC_BOB
+                        + COMPANY_DESC_BOB + ROLE_DESC_BOB + STATUS_DESC_BOB
+                        + CYCLE_DESC_BOB,
+                new AddCommand(expectedOpportunity));
+
+        // name with TBD placeholder
+        expectedOpportunity = new OpportunityBuilder(BOB)
+                .withName("(TBD)")
+                .build();
+        assertParseSuccess(parser,
+                " n/(TBD)" + EMAIL_DESC_BOB + CONTACT_ROLE_DESC_BOB
+                        + COMPANY_DESC_BOB + ROLE_DESC_BOB + STATUS_DESC_BOB
+                        + CYCLE_DESC_BOB,
+                new AddCommand(expectedOpportunity));
+
+        // name with hyphen placeholder
+        expectedOpportunity = new OpportunityBuilder(BOB)
+                .withName("---")
+                .build();
+        assertParseSuccess(parser,
+                " n/---" + EMAIL_DESC_BOB + CONTACT_ROLE_DESC_BOB
+                        + COMPANY_DESC_BOB + ROLE_DESC_BOB + STATUS_DESC_BOB
+                        + CYCLE_DESC_BOB,
+                new AddCommand(expectedOpportunity));
+    }
+
+    @Test
+    public void parse_contactRoleWithPlaceholder_success() {
+        // contact role with placeholder
+        Opportunity expectedOpportunity = new OpportunityBuilder(BOB)
+                .withContactRole("...")
+                .build();
+        assertParseSuccess(parser,
+                NAME_DESC_BOB + EMAIL_DESC_BOB + " cr/..."
+                        + COMPANY_DESC_BOB + ROLE_DESC_BOB + STATUS_DESC_BOB
+                        + CYCLE_DESC_BOB,
+                new AddCommand(expectedOpportunity));
+
+        // contact role with TBD placeholder
+        expectedOpportunity = new OpportunityBuilder(BOB)
+                .withContactRole("(TBD)")
+                .build();
+        assertParseSuccess(parser,
+                NAME_DESC_BOB + EMAIL_DESC_BOB + " cr/(TBD)"
+                        + COMPANY_DESC_BOB + ROLE_DESC_BOB + STATUS_DESC_BOB
+                        + CYCLE_DESC_BOB,
+                new AddCommand(expectedOpportunity));
+    }
+
+    @Test
+    public void parse_nameWithAmpersand_success() {
+        // name with ampersand
+        Opportunity expectedOpportunity = new OpportunityBuilder(BOB)
+                .withName("R&D Team")
+                .build();
+        assertParseSuccess(parser,
+                " n/R&D Team" + EMAIL_DESC_BOB + CONTACT_ROLE_DESC_BOB
+                        + COMPANY_DESC_BOB + ROLE_DESC_BOB + STATUS_DESC_BOB
+                        + CYCLE_DESC_BOB,
+                new AddCommand(expectedOpportunity));
+
+        // name with ampersand and spaces
+        expectedOpportunity = new OpportunityBuilder(BOB)
+                .withName("John & Jane")
+                .build();
+        assertParseSuccess(parser,
+                " n/John & Jane" + EMAIL_DESC_BOB + CONTACT_ROLE_DESC_BOB
+                        + COMPANY_DESC_BOB + ROLE_DESC_BOB + STATUS_DESC_BOB
+                        + CYCLE_DESC_BOB,
+                new AddCommand(expectedOpportunity));
+    }
 }
 

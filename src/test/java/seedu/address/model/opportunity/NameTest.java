@@ -33,10 +33,9 @@ public class NameTest {
         assertFalse(Name.isValidName("John / Doe")); // contains forward slash with spaces
         assertFalse(Name.isValidName("SWE/ML")); // forward slash (role-like string)
         assertFalse(Name.isValidName("a".repeat(61))); // exceeds max length of 60
-        assertFalse(Name.isValidName("@John")); // starts with special character
-        assertFalse(Name.isValidName("1John")); // starts with digit
-        assertFalse(Name.isValidName(".John")); // starts with period
-        assertFalse(Name.isValidName("(John)")); // starts with parenthesis
+        assertFalse(Name.isValidName("@John")); // starts with non-allowed special character
+        assertFalse(Name.isValidName("#John")); // starts with non-allowed special character
+        assertFalse(Name.isValidName("*John")); // starts with non-allowed special character
 
         // valid names - basic
         assertTrue(Name.isValidName("peter jack")); // alphabets only
@@ -61,12 +60,35 @@ public class NameTest {
         // valid names - with newly-added punctuation (commas)
         assertTrue(Name.isValidName("John Doe, Jr.")); // comma in suffix
         assertTrue(Name.isValidName("Smith, John")); // comma separating parts
-        assertTrue(Name.isValidName("Name, Name")); // multiple commas
+        assertTrue(Name.isValidName("Name, , Name")); // multiple commas
 
         // valid names - with newly-added punctuation (parentheses)
         assertTrue(Name.isValidName("Mary (Mei Ling)")); // alternate name in parentheses
         assertTrue(Name.isValidName("John (Jr)")); // suffix in parentheses
         assertTrue(Name.isValidName("李明 (Li Ming)")); // Unicode with parentheses
+
+        // valid names - with newly-added punctuation (ampersand)
+        assertTrue(Name.isValidName("R&D Team")); // ampersand in middle
+        assertTrue(Name.isValidName("John & Jane")); // ampersand with spaces
+        assertTrue(Name.isValidName("Smith & Sons")); // company-style name
+        assertTrue(Name.isValidName("HR & Recruiting Dept")); // department name
+
+        // valid names - starting with punctuation (placeholder support)
+        assertTrue(Name.isValidName("...")); // ellipsis placeholder
+        assertTrue(Name.isValidName("(TBD)")); // to-be-determined placeholder
+        assertTrue(Name.isValidName("---")); // hyphen placeholder
+        assertTrue(Name.isValidName("(Nickname) RealName")); // parenthesis at start
+        assertTrue(Name.isValidName("'The Artist'")); // apostrophe at start
+        assertTrue(Name.isValidName("&Sons")); // ampersand at start
+        assertTrue(Name.isValidName("-Redacted-")); // hyphen at start
+        assertTrue(Name.isValidName(".hidden")); // period at start
+        assertTrue(Name.isValidName(",")); // single comma (weird but allowed)
+
+        // valid names - starting with digits
+        assertTrue(Name.isValidName("1st Place")); // digit at start
+        assertTrue(Name.isValidName("1John")); // digit at start
+        assertTrue(Name.isValidName("2pac")); // digit at start (artist name)
+        assertTrue(Name.isValidName("50 Cent")); // digit at start
 
         // valid names - combined punctuation
         assertTrue(Name.isValidName("Dr. O'Brien-Smith, Jr.")); // combination of all allowed punctuation

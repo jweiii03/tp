@@ -32,9 +32,9 @@ public class ContactRoleTest {
         assertFalse(ContactRole.isValidContactRole("Tech/HR")); // contains forward slash
         assertFalse(ContactRole.isValidContactRole("HR / Recruiting")); // contains forward slash with spaces
         assertFalse(ContactRole.isValidContactRole("a".repeat(51))); // exceeds max length of 50
-        assertFalse(ContactRole.isValidContactRole("@recruiter")); // starts with special character
-        assertFalse(ContactRole.isValidContactRole(".recruiter")); // starts with period
-        assertFalse(ContactRole.isValidContactRole("&recruiter")); // starts with ampersand
+        assertFalse(ContactRole.isValidContactRole("@recruiter")); // starts with non-allowed special character
+        assertFalse(ContactRole.isValidContactRole("#recruiter")); // starts with non-allowed special character
+        assertFalse(ContactRole.isValidContactRole("*recruiter")); // starts with non-allowed special character
 
         // valid contact roles - basic
         assertTrue(ContactRole.isValidContactRole("recruiter")); // single word
@@ -71,6 +71,22 @@ public class ContactRoleTest {
         assertTrue(ContactRole.isValidContactRole("Director's Assistant")); // possessive form
         assertTrue(ContactRole.isValidContactRole("CEO's Office")); // possessive with office
         assertTrue(ContactRole.isValidContactRole("Manager's Deputy")); // possessive deputy
+
+        // valid contact roles - starting with punctuation (placeholder support)
+        assertTrue(ContactRole.isValidContactRole("...")); // ellipsis placeholder
+        assertTrue(ContactRole.isValidContactRole("(TBD)")); // to-be-determined placeholder
+        assertTrue(ContactRole.isValidContactRole("---")); // hyphen placeholder
+        assertTrue(ContactRole.isValidContactRole("'Chief' Officer")); // apostrophe at start
+        assertTrue(ContactRole.isValidContactRole("&Associates")); // ampersand at start
+        assertTrue(ContactRole.isValidContactRole(".Manager")); // period at start
+        assertTrue(ContactRole.isValidContactRole("(Tech) Lead")); // parenthesis at start
+        assertTrue(ContactRole.isValidContactRole("-Assistant-")); // hyphen at start
+        assertTrue(ContactRole.isValidContactRole(",")); // single comma (weird but allowed)
+
+        // valid contact roles - starting with digits
+        assertTrue(ContactRole.isValidContactRole("1st Line Manager")); // digit at start
+        assertTrue(ContactRole.isValidContactRole("2IC")); // digit at start (Second-in-Command)
+        assertTrue(ContactRole.isValidContactRole("3rd Party Recruiter")); // digit at start
 
         // valid contact roles - combined punctuation
         assertTrue(ContactRole.isValidContactRole("Sr. HR & Recruiting Manager")); // period and ampersand
