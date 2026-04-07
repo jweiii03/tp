@@ -90,15 +90,7 @@ public class EditCommand extends Command {
         Opportunity opportunityToEdit = lastShownList.get(index.getZeroBased());
         Opportunity editedOpportunity = createEditedOpportunity(opportunityToEdit, editOpportunityDescriptor);
 
-        if (!opportunityToEdit.isSameOpportunity(editedOpportunity) && model.hasOpportunity(editedOpportunity)) {
-            Optional<Opportunity> conflicting = model.getConflictingOpportunity(editedOpportunity);
-            assert conflicting.isPresent() : "Conflicting opportunity must be present when hasOpportunity is true";
-            if (conflicting.get().isArchived()) {
-                throw new CommandException(MESSAGE_DUPLICATE_IN_ARCHIVE);
-            } else {
-                throw new CommandException(MESSAGE_DUPLICATE_IN_ACTIVE_LIST);
-            }
-        }
+        checkForConflict(model, opportunityToEdit, editedOpportunity);
 
         boolean wasArchived = opportunityToEdit.isArchived();
 
@@ -111,6 +103,20 @@ public class EditCommand extends Command {
         }
         model.commitAddressBook();
         return new CommandResult(String.format(MESSAGE_EDIT_OPPORTUNITY_SUCCESS, Messages.format(editedOpportunity)));
+    }
+
+    private void checkForConflict(Model model, Opportunity opportunityToEdit, Opportunity editedOpportunity)
+            throws CommandException {
+        if (!opportunityToEdit.isSameOpportunity(editedOpportunity) && model.hasOpportunity(editedOpportunity)) {
+            Opportunity conflicting = model.getConflictingOpportunity(editedOpportunity)
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Conflicting opportunity must be present when hasOpportunity is true"));
+            if (conflicting.isArchived()) {
+                throw new CommandException(MESSAGE_DUPLICATE_IN_ARCHIVE);
+            } else {
+                throw new CommandException(MESSAGE_DUPLICATE_IN_ACTIVE_LIST);
+            }
+        }
     }
 
     /**
@@ -130,7 +136,7 @@ public class EditCommand extends Command {
         Status updatedStatus = editOpportunityDescriptor.getStatus().orElse(opportunityToEdit.getStatus());
         Cycle updatedCycle = editOpportunityDescriptor.getCycle().orElse(opportunityToEdit.getCycle());
         Phone updatedPhone;
-        if (editOpportunityDescriptor.isClearPhone()) {
+        if (editOpportunityDescriptor.shouldClearPhone()) {
             updatedPhone = null;
         } else {
             updatedPhone = editOpportunityDescriptor.getPhone().orElse(opportunityToEdit.getPhone().orElse(null));
@@ -180,7 +186,7 @@ public class EditCommand extends Command {
         private Cycle cycle;
         private Phone phone;
         /** When true, the phone field should be cleared (set to absent) on the edited opportunity. */
-        private boolean clearPhone = false;
+        private boolean shouldClearPhone = false;
 
         public EditOpportunityDescriptor() {}
 
@@ -196,7 +202,7 @@ public class EditCommand extends Command {
             setStatus(toCopy.status);
             setPhone(toCopy.phone);
             setCycle(toCopy.cycle);
-            setClearPhone(toCopy.clearPhone);
+            setShouldClearPhone(toCopy.shouldClearPhone);
         }
 
         /**
@@ -204,7 +210,7 @@ public class EditCommand extends Command {
          */
         public boolean isAnyFieldEdited() {
             return CollectionUtil.isAnyNonNull(name, email, contactRole, company, role, status, cycle, phone)
-                    || clearPhone;
+                    || shouldClearPhone;
         }
 
         public void setName(Name name) {
@@ -276,15 +282,15 @@ public class EditCommand extends Command {
          * When {@code true}, the phone number will be removed from the opportunity on edit,
          * regardless of whether a new phone value is provided.
          */
-        public void setClearPhone(boolean clearPhone) {
-            this.clearPhone = clearPhone;
+        public void setShouldClearPhone(boolean shouldClearPhone) {
+            this.shouldClearPhone = shouldClearPhone;
         }
 
         /**
          * Returns true if the phone field should be explicitly cleared on edit.
          */
-        public boolean isClearPhone() {
-            return clearPhone;
+        public boolean shouldClearPhone() {
+            return shouldClearPhone;
         }
 
         @Override
@@ -307,7 +313,7 @@ public class EditCommand extends Command {
                 && getStatus().equals(otherEditOpportunityDescriptor.getStatus())
                 && getCycle().equals(otherEditOpportunityDescriptor.getCycle())
                 && getPhone().equals(otherEditOpportunityDescriptor.getPhone())
-                && isClearPhone() == otherEditOpportunityDescriptor.isClearPhone();
+                && shouldClearPhone() == otherEditOpportunityDescriptor.shouldClearPhone();
         }
 
         @Override
@@ -321,7 +327,7 @@ public class EditCommand extends Command {
                     .add("status", status)
                     .add("cycle", cycle)
                     .add("phone", phone)
-                    .add("clearPhone", clearPhone)
+                    .add("clearPhone", shouldClearPhone)
                     .toString();
         }
     }
