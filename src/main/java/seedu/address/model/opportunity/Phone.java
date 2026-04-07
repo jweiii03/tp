@@ -11,13 +11,15 @@ public class Phone {
 
     public static final String MESSAGE_CONSTRAINTS =
         "Phone numbers should contain 3 to 15 digits, may optionally start with '+', "
-            + "and may use spaces, hyphens, or parentheses as separators "
-            + "(e.g. +65 9123 4567, +1-800-555-0100, +1 (212) 555-0199)";
+            + "and may use spaces, hyphens, or parentheses as separators between digits "
+            + "(e.g. +65 9123 4567, +1-800-555-0100, +1 (212) 555-0199). "
+            + "Separators may not appear at the start or end.";
 
     public static final int MIN_DIGITS = 3;
     public static final int MAX_DIGITS = 15;
 
-    public static final String VALIDATION_REGEX = "\\+?\\d{" + MIN_DIGITS + "," + MAX_DIGITS + "}";
+    // Structural regex: must start (after optional '+') and end with a digit; separators only in between
+    private static final String STRUCTURAL_REGEX = "\\+?\\d[\\d\\s()\\-]*\\d|\\+?\\d";
 
     private final String value;
 
@@ -39,11 +41,17 @@ public class Phone {
 
     /**
      * Returns true if a given string is a valid phone number.
-     * Spaces, hyphens, and parentheses are treated as separators and ignored during validation.
+     * The raw input must start and end with a digit (with optional leading '+'),
+     * and the digit count (after stripping separators) must be between MIN_DIGITS and MAX_DIGITS.
      */
     public static boolean isValidPhone(String test) {
         requireNonNull(test);
-        return normalize(test.trim()).matches(VALIDATION_REGEX);
+        String trimmed = test.trim();
+        if (!trimmed.matches(STRUCTURAL_REGEX)) {
+            return false;
+        }
+        String digits = normalize(trimmed).replaceAll("\\+", "");
+        return digits.length() >= MIN_DIGITS && digits.length() <= MAX_DIGITS;
     }
 
     /**
