@@ -168,8 +168,12 @@ public class ParserUtil {
      * Returns the parsed result, or {@code null} if the prefix is absent or if parsing fails.
      * Any {@link ParseException} message is appended to {@code errorMessages}.
      */
-    public static <T> T parseField(ArgumentMultimap argMultimap, Prefix prefix,
-                                   FieldParser<T> parser, List<String> errorMessages) {
+    static <T> T parseField(ArgumentMultimap argMultimap, Prefix prefix,
+                            FieldParser<T> parser, List<String> errorMessages) {
+        requireNonNull(argMultimap);
+        requireNonNull(prefix);
+        requireNonNull(parser);
+        requireNonNull(errorMessages);
         if (!argMultimap.getValue(prefix).isPresent()) {
             return null;
         }
