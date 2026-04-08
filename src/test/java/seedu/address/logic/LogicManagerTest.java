@@ -144,8 +144,8 @@ public class LogicManagerTest {
         model.updateFilteredOpportunityList(new OpportunityContainsSubstringPredicate(List.of("zzz"), List.of()));
         model.setArchiveView(true);
 
-        Path prefPath = temporaryFolder.resolve("ExceptionUserPrefs.json");
-        JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(prefPath) {
+        Path addressBookPath = temporaryFolder.resolve("ExceptionAddressBook.json");
+        JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(addressBookPath) {
             @Override
             public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath)
                     throws IOException {

@@ -47,7 +47,7 @@ public class LogicManager implements Logic {
         logger.info("----------------[USER COMMAND][" + commandText + "]");
 
         Command command = addressBookParser.parseCommand(commandText);
-        Model.ModelState stateBeforeExecution = null;
+        Model.StateSnapshot stateBeforeExecution = null;
 
         if (!command.isReadOnly()) {
             stateBeforeExecution = model.getStateSnapshot();

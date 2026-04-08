@@ -125,20 +125,17 @@ public interface Model {
     void commitAddressBook();
 
     /**
-     * Snapshot of model state needed to roll back a mutating command if saving fails.
+     * Opaque snapshot of model state needed to roll back a mutating command if saving fails.
      */
-    record ModelState(
-            VersionedAddressBook addressBookSnapshot,
-            Predicate<Opportunity> filteredListPredicate,
-            boolean isArchiveView) { }
+    interface StateSnapshot { }
 
     /**
      * Returns a snapshot of the current model state.
      */
-    ModelState getStateSnapshot();
+    StateSnapshot getStateSnapshot();
 
     /**
      * Restores the model to a previously captured snapshot.
      */
-    void restoreState(ModelState modelState);
+    void restoreState(StateSnapshot stateSnapshot);
 }

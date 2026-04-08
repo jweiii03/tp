@@ -193,12 +193,12 @@ public class AddCommandTest {
         }
 
         @Override
-        public ModelState getStateSnapshot() {
+        public Model.StateSnapshot getStateSnapshot() {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void restoreState(ModelState modelState) {
+        public void restoreState(Model.StateSnapshot stateSnapshot) {
             throw new AssertionError("This method should not be called.");
         }
     }

@@ -151,7 +151,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public ModelState getStateSnapshot() {
+    public StateSnapshot getStateSnapshot() {
         Predicate<? super Opportunity> currentPredicate = filteredOpportunities.getPredicate();
         Predicate<Opportunity> snapshotPredicate;
 
@@ -161,7 +161,7 @@ public class ModelManager implements Model {
             snapshotPredicate = opportunity -> currentPredicate.test(opportunity);
         }
 
-        return new ModelState(
+        return new ModelStateSnapshot(
                 new VersionedAddressBook(addressBook),
                 snapshotPredicate,
                 isArchiveView
@@ -169,12 +169,17 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void restoreState(ModelState modelState) {
-        requireNonNull(modelState);
+    public void restoreState(StateSnapshot stateSnapshot) {
+        requireNonNull(stateSnapshot);
 
-        addressBook.restore(modelState.addressBookSnapshot());
-        filteredOpportunities.setPredicate(modelState.filteredListPredicate());
-        isArchiveView = modelState.isArchiveView();
+        if (!(stateSnapshot instanceof ModelStateSnapshot)) {
+            throw new IllegalArgumentException("Unsupported state snapshot type");
+        }
+
+        ModelStateSnapshot modelState = (ModelStateSnapshot) stateSnapshot;
+        addressBook.restore(modelState.addressBookSnapshot);
+        filteredOpportunities.setPredicate(modelState.filteredListPredicate);
+        isArchiveView = modelState.isArchiveView;
     }
 
     @Override
@@ -211,5 +216,22 @@ public class ModelManager implements Model {
     @Override
     public void commitAddressBook() {
         addressBook.commit();
+    }
+
+    /**
+     * Internal immutable snapshot implementation.
+     */
+    private static final class ModelStateSnapshot implements StateSnapshot {
+        private final VersionedAddressBook addressBookSnapshot;
+        private final Predicate<Opportunity> filteredListPredicate;
+        private final boolean isArchiveView;
+
+        private ModelStateSnapshot(VersionedAddressBook addressBookSnapshot,
+                                   Predicate<Opportunity> filteredListPredicate,
+                                   boolean isArchiveView) {
+            this.addressBookSnapshot = new VersionedAddressBook(addressBookSnapshot);
+            this.filteredListPredicate = filteredListPredicate;
+            this.isArchiveView = isArchiveView;
+        }
     }
 }
