@@ -842,7 +842,7 @@ The test cases below focus on:
       Expected: No opportunity contact is edited. Error details are shown in the status message.
 
    1. Test case: `edit 1`<br>
-      Expected: No opportunity contact is edited. An invalid command format error is shown.
+   Expected: No opportunity contact is edited. An error message is shown: `At least one field to edit must be provided.`
 
 1. Editing into a duplicate opportunity contact
 
@@ -888,11 +888,6 @@ The test cases below focus on:
    1. Test case: `find a/ c/Stripe`<br>
       Expected: Only archived opportunity contacts whose company matches `Stripe` are shown. The `Archive` tab is highlighted.
 
-1. Rejecting an invalid archived company-only search
-
-   1. Test case: `find a/c/Stripe`<br>
-      Expected: No search is performed. An invalid command format error is shown because archived company-only search must be written as `find a/ c/Stripe`.<br><br>
-
 1. Archived search by name and company
 
    1. Prerequisites: Ensure there is at least one archived opportunity contact whose name contains `Jane` and whose company contains `Stripe`.
@@ -906,10 +901,10 @@ The test cases below focus on:
       Expected: No search is performed. An invalid command format error is shown.
 
    1. Test case: `find google a/`<br>
-      Expected: No search is performed. An invalid command format error is shown.
+   Expected: No search is performed. An error message is shown: `When using a/, keywords must appear after it (optionally separated by whitespace). Use 'find a/KEYWORD' or 'find a/ KEYWORD' to search archived by name, or 'find a/ c/COMPANY' to search archived by company.`
 
    1. Test case: `find alice a/bob`<br>
-      Expected: No search is performed. An invalid command format error is shown.
+      Expected: No search is performed. An error message is shown: `Keywords cannot appear both before and after a/. Use 'find a/KEYWORD' or 'find a/ KEYWORD' to search archived opportunities.`
 
    1. Other invalid commands to try: `find`, `find c/`<br>
       Expected: No search is performed. Error details are shown in the status message.
