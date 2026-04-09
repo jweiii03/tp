@@ -298,7 +298,7 @@ The `Name`, `ContactRole`, `Company`, and `Role` fields use a simplified validat
 
 The forward slash character is specifically blocked in Name, ContactRole, Company, and Role fields because:
 1. **CLI prefix delimiter**: InternTrack uses `/` as the prefix delimiter (e.g., `n/`, `cr/`, `c/`, `r/`)
-2. **Parser safety**: The `ArgumentTokenizer` recognizes prefixes when preceded by whitespace. A field value containing `/` after a space (e.g., `SWE /ML`) could be misinterpreted as a new prefix
+2. **Parser safety**: The `ArgumentTokenizer` recognizes prefixes when preceded by whitespace. A field value containing a known prefix pattern after a space (e.g., `Frontend c/Backend`) would be misinterpreted as a new prefix
 3. **Legitimate technical constraint**: This restriction is based on a real parsing concern, not arbitrary preference
 4. **Available alternatives**: Users can express compound values using:
    - Hyphens: `SWE-ML Engineer` instead of `SWE/ML Engineer`
@@ -1172,7 +1172,7 @@ testers are expected to do more *exploratory* testing.
 
    1. To simulate a missing data file, close the app, delete the data file `data/addressbook.json`, and then reopen the app.
 
-   1. Expected: The app recreates the missing data file and loads sample data without crashing.
+   1. Expected: The app does not crash and loads sample data. The missing file will only be recreated on the next successful save (e.g., after an `add` or `edit` command).
 
    1. See the [User Guide](UserGuide.md#faq) for how to locate the data file.
 
