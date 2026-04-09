@@ -728,10 +728,10 @@ testers are expected to do more *exploratory* testing.
 ### Viewing active and archived lists
 
 1. Test case: `list`<br>
-   Expected: All unarchived opportunities are shown. The `Main` tab is highlighted.
+   Expected: All unarchived opportunity contacts are shown. The `Main` tab is highlighted.
 
 1. Test case: `list archive`<br>
-   Expected: All archived opportunities are shown. The `Archive` tab is highlighted.
+   Expected: All archived opportunity contacts are shown. The `Archive` tab is highlighted.
 
 1. Rejecting invalid list commands: `list 123`, `list archive 123`<br>
    Expected: The list is not changed. An invalid command format error is shown.
@@ -886,7 +886,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Archiving while viewing the archived list
 
-   1. Prerequisites: Show archived opportunities using the `list archive` command.
+   1. Prerequisites: Show archived opportunity contacts using the `list archive` command.
 
    1. Test case: `archive 1`<br>
       Expected: No opportunity contact is archived. Error details are shown — archiving only works from the active list.
@@ -898,7 +898,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Unarchiving from the archived list
 
-   1. Prerequisites: Show archived opportunities using the `list archive` command. Ensure there is at least one entry.
+   1. Prerequisites: Show archived opportunity contacts using the `list archive` command. Ensure there is at least one entry.
 
    1. Test case: `unarchive 1`<br>
       Expected: The first archived opportunity contact is restored to the active list. A success message is shown.
