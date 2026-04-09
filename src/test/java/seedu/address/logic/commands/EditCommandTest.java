@@ -143,7 +143,8 @@ public class EditCommandTest {
         showOpportunityAtIndex(model, INDEX_FIRST_OPPORTUNITY);
         assertEquals(1, model.getFilteredOpportunityList().size());
 
-        Opportunity originalOpportunity = model.getFilteredOpportunityList().get(INDEX_FIRST_OPPORTUNITY.getZeroBased());
+        int firstIndex = INDEX_FIRST_OPPORTUNITY.getZeroBased();
+        Opportunity originalOpportunity = model.getFilteredOpportunityList().get(firstIndex);
         // Capture the keyword that showOpportunityAtIndex used, so the expected predicate stays in sync
         String filterKeyword = originalOpportunity.getName().getFullName().split("\\s+")[0];
 
