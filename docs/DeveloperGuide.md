@@ -134,7 +134,7 @@ The `Model` component,
 
 * stores InternTrack data internally as `Opportunity` objects (which are contained in a `UniqueOpportunityList` object).
 * stores the currently 'selected' `Opportunity` objects (e.g., results of a search query or an archive filter) as a separate *filtered* list which is exposed to outsiders as an unmodifiable `ObservableList<Opportunity>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
-* stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
+* stores a `UserPrefs` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPrefs` object.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components).
 
 <box type="info" seamless>
@@ -152,7 +152,7 @@ The `Model` component,
 
 The `Storage` component,
 * can save InternTrack data to JSON storage files such as `addressbook.json`, and read them back into corresponding objects together with user preference data.
-* inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
+* inherits from both `AddressBookStorage` and `UserPrefsStorage`, which means it can be treated as either one (if the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
 ### Common classes
@@ -643,8 +643,7 @@ Preconditions: At least one opportunity contact exists in the archived list.
 **MSS**
 
 1. User requests to exit the application.
-2. System saves any unsaved data.
-3. System closes the application.
+2. System closes the application.
 
    Use case ends.
 
@@ -700,14 +699,14 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy it into an empty folder.
 
-   1. Double-click the jar file.<br>
+   1. Open a command terminal, `cd` into the folder you put the jar file in, and run `java -jar interntrack.jar`.<br>
       Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
 
 1. Saving window and layout preferences
 
    1. Resize the window to an optimum size. Move the window to a different location. Adjust the divider between the result display box and the opportunity list. Close the window.
 
-   1. Re-launch the app by double-clicking the jar file.<br>
+   1. Re-launch the app by running `java -jar interntrack.jar` in the terminal.<br>
       Expected: The most recent window size, window location, and divider position are retained.
 
 1. Exiting the application
