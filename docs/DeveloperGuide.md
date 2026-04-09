@@ -298,7 +298,7 @@ The `Name`, `ContactRole`, `Company`, and `Role` fields use a simplified validat
 
 The forward slash character is specifically blocked in Name, ContactRole, Company, and Role fields because:
 1. **CLI prefix delimiter**: InternTrack uses `/` as the prefix delimiter (e.g., `n/`, `cr/`, `c/`, `r/`)
-2. **Parser safety**: The `ArgumentTokenizer` recognizes prefixes when preceded by whitespace. A field value containing a known prefix pattern after a space (e.g., `Frontend c/Backend`) would be misinterpreted as a new prefix
+2. **Parser safety**: The `ArgumentTokenizer` recognizes prefixes when preceded by a space. A field value containing a known prefix pattern after a space (e.g., `Frontend c/Backend`) would be misinterpreted as a new prefix
 3. **Legitimate technical constraint**: This restriction is based on a real parsing concern, not arbitrary preference
 4. **Available alternatives**: Users can express compound values using:
    - Hyphens: `SWE-ML Engineer` instead of `SWE/ML Engineer`
