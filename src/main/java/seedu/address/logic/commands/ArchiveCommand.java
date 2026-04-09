@@ -47,7 +47,8 @@ public class ArchiveCommand extends Command {
         }
 
         List<Opportunity> lastShownList = model.getFilteredOpportunityList();
-        List<Opportunity> opportunitiesToArchive = IndexCommandUtil.getItemsAtIndices(targetIndices, lastShownList);
+        List<Opportunity> opportunitiesToArchive = IndexCommandUtil.getItemsAtIndices(
+                targetIndices, lastShownList, Messages.MESSAGE_INVALID_OPPORTUNITY_DISPLAYED_INDEX);
 
         StringBuilder archivedOpportunities = new StringBuilder();
         for (Opportunity opportunityToArchive : opportunitiesToArchive) {

@@ -45,11 +45,12 @@ public class UnarchiveCommand extends Command {
 
         List<Opportunity> displayedArchivedOpportunities = new ArrayList<>(model.getFilteredOpportunityList());
 
-        // Sort indices in descending order to prevent index mismatch
-        // due to shifting when unarchiving multiple opportunities
+        // Sort indices in descending order so the success message lists later indices first.
         List<Index> sortedIndices = IndexCommandUtil.getIndicesInDescendingOrder(targetIndices);
         List<Opportunity> opportunitiesToUnarchive =
-                IndexCommandUtil.getItemsAtIndices(sortedIndices, displayedArchivedOpportunities);
+                IndexCommandUtil.getItemsAtIndices(
+                        sortedIndices, displayedArchivedOpportunities,
+                        Messages.MESSAGE_INVALID_OPPORTUNITY_DISPLAYED_INDEX);
 
         StringBuilder unarchivedOpportunities = new StringBuilder();
 

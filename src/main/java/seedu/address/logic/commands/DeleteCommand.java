@@ -37,9 +37,10 @@ public class DeleteCommand extends Command {
 
         List<Opportunity> lastShownList = model.getFilteredOpportunityList();
 
-        // Sort indices in descending order to prvent shifting index trap
+        // Sort indices in descending order so the success message lists later indices first.
         List<Index> sortedIndices = IndexCommandUtil.getIndicesInDescendingOrder(targetIndices);
-        List<Opportunity> opportunitiesToDelete = IndexCommandUtil.getItemsAtIndices(sortedIndices, lastShownList);
+        List<Opportunity> opportunitiesToDelete = IndexCommandUtil.getItemsAtIndices(
+                sortedIndices, lastShownList, Messages.MESSAGE_INVALID_OPPORTUNITY_DISPLAYED_INDEX);
 
         StringBuilder deletedOpportunities = new StringBuilder();
         for (Opportunity opportunityToDelete : opportunitiesToDelete) {

@@ -22,16 +22,18 @@ final class IndexCommandUtil {
      *
      * @throws CommandException if the indices contain duplicates or are out of bounds.
      */
-    static <T> List<T> getItemsAtIndices(List<Index> targetIndices, List<T> items) throws CommandException {
+    static <T> List<T> getItemsAtIndices(List<Index> targetIndices, List<T> items,
+                                         String invalidIndexMessage) throws CommandException {
         requireNonNull(targetIndices);
         requireNonNull(items);
+        requireNonNull(invalidIndexMessage);
 
         validateUniqueIndices(targetIndices);
 
         List<T> selectedItems = new ArrayList<>();
         for (Index targetIndex : targetIndices) {
             if (targetIndex.getZeroBased() >= items.size()) {
-                throw new CommandException(Messages.MESSAGE_INVALID_OPPORTUNITY_DISPLAYED_INDEX);
+                throw new CommandException(invalidIndexMessage);
             }
             selectedItems.add(items.get(targetIndex.getZeroBased()));
         }
