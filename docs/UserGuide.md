@@ -55,8 +55,8 @@ InternTrack is a **desktop app for managing application-related contacts**, opti
 * Items in square brackets are optional.<br>
   e.g `n/NAME e/EMAIL cr/CONTACT_ROLE c/COMPANY r/ROLE s/STATUS cy/CYCLE [p/PHONE_NUMBER]` can be used as `n/Alicia Tan e/alicia.tan@stripe.com cr/recruiter c/Stripe r/SWE Intern s/SAVED cy/SUMMER 2026 p/91234567` or as `n/Alicia Tan e/alicia.tan@stripe.com cr/recruiter c/Stripe r/SWE Intern s/SAVED cy/SUMMER 2026`.
 
-* Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[MORE_INDICES]...` can be used as ` ` (i.e. 0 times), `1`, `1 2`, `1 2 3` etc.
+* Items with `…` after them can be used multiple times, including zero times for the repeated portion.<br>
+  e.g. in `INDEX [MORE_INDICES]...`, the first `INDEX` is required, while `[MORE_INDICES]...` means zero or more additional indices. So valid inputs include `1`, `1 2`, `1 2 3` etc.
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/Alicia Tan e/alicia.tan@stripe.com cr/recruiter c/Stripe r/SWE Intern s/SAVED cy/SUMMER 2026 p/91234567`, `e/alicia.tan@stripe.com n/Alicia Tan c/Stripe r/SWE Intern s/SAVED cy/SUMMER 2026 cr/recruiter p/91234567` is also acceptable.
