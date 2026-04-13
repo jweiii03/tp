@@ -1107,16 +1107,16 @@ such as `find Jane r/SWE` are currently interpreted as plain name keywords inste
 unsupported filter prefixes. We plan to introduce richer prefixed filtering (e.g., role/status/cycle) and, in the
 interim, provide clearer parser feedback when unsupported prefixes are used.
 
-3. **Normalize internal whitespace in `Company` and `Role` fields and show a duplicate warning instead of immediate rejection**: 
-The current duplicate detection compares `Company` and `Role` using case-insensitive string matching but 
+3. **Normalize internal whitespace in `Company` and `Role` fields and show a duplicate warning instead of immediate rejection**:
+The current duplicate detection compares `Company` and `Role` using case-insensitive string matching but
 does not collapse internal whitespace. This means entries such as `r/SWE Intern` and `r/SWE  Intern` (double space)
-are treated as distinct, bypassing duplicate detection. We plan to normalize multiple consecutive spaces into a 
+are treated as distinct, bypassing duplicate detection. We plan to normalize multiple consecutive spaces into a
 single space (e.g., using `.replaceAll("\\s+", " ")`) when `Company` and `Role` values are created, so that
 normalization is applied consistently to both CLI input and data loaded from JSON storage, similar to how `Cycle`
-input is already normalized during parsing before the `Cycle` object is constructed. Additionally, when a duplicate is detected 
-as a result of this normalization (i.e., the user accidentally typed extra spaces), the system will show a 
-duplicate warning instead of an immediate hard rejection, so the user understands why their input was flagged. 
-Example: `add ... c/Google r/SWE  Intern ...` and `add ... c/Google r/SWE Intern ...` (with the same Email and Cycle) 
+input is already normalized during parsing before the `Cycle` object is constructed. Additionally, when a duplicate is detected
+as a result of this normalization (i.e., the user accidentally typed extra spaces), the system will show a
+duplicate warning instead of an immediate hard rejection, so the user understands why their input was flagged.
+Example: `add ... c/Google r/SWE  Intern ...` and `add ... c/Google r/SWE Intern ...` (with the same Email and Cycle)
 should trigger a duplicate warning.
 
 4. **Warn users when the data file is corrupted or unreadable on startup**: The current startup behavior follows
