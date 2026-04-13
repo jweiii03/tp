@@ -1091,18 +1091,10 @@ The test cases below focus on:
 
 Team size: 5
 
-1. **Refine duplicate handling for shared-mailbox contacts in `add`**: The current `add` logic rejects any new record
-when `Email + Company + Role + Cycle` matches an existing record, which can wrongly block distinct contacts who use
-the same generic email (e.g., `internships@company.com`). We plan to keep a strict rejection only when **all fields**
- match after normalization (`Name`, `Email`, `ContactRole`, `Company`, `Role`, `Cycle`, `Status`, `Phone`), and
-change partial matches on the core tuple (`Email + Company + Role + Cycle`) into a **duplicate warning** instead of
-immediate rejection when at least one of `Name`/`ContactRole`/`Status`/`Phone` differs. Example: if `add n/Amy Lee
-e/internships@stripe.com cr/recruiter c/Stripe r/SWE Intern s/APPLIED cy/SUMMER 2026` exists, then `add n/Ben Tan
-e/internships@stripe.com cr/hiring manager c/Stripe r/SWE Intern s/OA cy/SUMMER 2026` should show a
-possible-duplicate warning but still be allowed if the user decides to proceed with the addition or edit.
+1. **Refine duplicate handling for shared-mailbox contacts in `add`**: The current `add` logic rejects any new record when `Email + Company + Role + Cycle` matches an existing record, which can wrongly block distinct contacts who use the same generic email (e.g., `internships@company.com`). We plan to keep a strict rejection only when **all fields** match after normalization (`Name`, `Email`, `ContactRole`, `Company`, `Role`, `Cycle`, `Status`, `Phone`), and change partial matches on the core tuple (`Email + Company + Role + Cycle`) into a **duplicate warning** instead of immediate rejection when at least one of `Name`/`ContactRole`/`Status`/`Phone` differs.
+Example: if `add n/Amy Lee e/internships@stripe.com cr/recruiter c/Stripe r/SWE Intern s/APPLIED cy/SUMMER 2026` exists, then `add n/Ben Tan e/internships@stripe.com cr/hiring manager c/Stripe r/SWE Intern s/OA cy/SUMMER 2026` should show a possible-duplicate warning but still be allowed if the user decides to proceed with the addition or edit.
 
-2. **Extend `find` to support additional prefixed filters with explicit errors for unsupported prefixes**: The current
-`find` implementation supports name keywords by default and `c/` for company (with optional `a/` archive scope). Inputs
-such as `find Jane r/SWE` are currently interpreted as plain name keywords instead of raising a targeted error for
-unsupported filter prefixes. We plan to introduce richer prefixed filtering (e.g., role/status/cycle) and, in the
-interim, provide clearer parser feedback when unsupported prefixes are used.
+2. **Extend `find` to support additional prefixed filters with explicit errors for unsupported prefixes**: The current `find` implementation supports name keywords by default and `c/` for company (with optional `a/` archive scope). Inputs such as `find Jane r/SWE` are currently interpreted as plain name keywords instead of raising a targeted error for unsupported filter prefixes. We plan to introduce richer prefixed filtering (e.g., role/status/cycle) and, in the interim, provide clearer parser feedback when unsupported prefixes are used.
+
+3. **Allow escaped forward slashes in `n/NAME` for `add` and `edit`**: The current parser/validation blocks `/` in name values, so legitimate inputs such as `Asha s/o Kumar` cannot be stored. We plan to support escaped slashes in the name field by accepting `\/` as a literal slash during parsing, while keeping raw `/` as the command-prefix delimiter.
+Example: `add n/Asha s\/o Kumar e/asha@example.com cr/recruiter c/Acme r/SWE Intern s/SAVED cy/SUMMER 2026` should be saved and displayed as `Asha s/o Kumar`. Unescaped slash usage that conflicts with command prefixes will still be rejected with a clear guidance message to use `\/`.
