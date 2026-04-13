@@ -61,16 +61,17 @@ InternTrack is a **desktop app for managing application-related contacts**, opti
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/Alicia Tan e/alicia.tan@stripe.com cr/recruiter c/Stripe r/SWE Intern s/SAVED cy/SUMMER 2026 p/91234567`, `e/alicia.tan@stripe.com n/Alicia Tan c/Stripe r/SWE Intern s/SAVED cy/SUMMER 2026 cr/recruiter p/91234567` is also acceptable.
 
-* Top-level command words are case-insensitive.
-e.g. `list`, `LiSt`, and `LIST` are treated as the same command.
+* All command words are case-insensitive.<br>
+  e.g. `list`, `LiSt`, and `LIST` are treated as the same command. Likewise, `archive 2` and `ArChIvE 2` are both valid.
 
-* Some command sub-keywords are also case-insensitive where stated.
-e.g. `list archive`, `LiSt ArChIvE`, `archive cycle SUMMER 2026`, and `ArChIvE CyClE summer 2026` are all valid.
+* Some command sub-keywords are also case-insensitive where stated.<br>
+  e.g. `list archive`, `LiSt ArChIvE`, `archive cycle SUMMER 2026`, and `ArChIvE CyClE summer 2026` are all valid.
 
-* CLI prefixes are case-sensitive and must be entered in lowercase.
-e.g. use `n/`, `e/`, `cr/`, `c/`, `r/`, `s/`, `cy/`, `p/`, and `a/`, not `N/`, `E/`, `CR/`, `C/`, etc.
+* Prefixes are case-sensitive and must be entered in lowercase.<br>
+  e.g. use `n/`, `e/`, `cr/`, `c/`, `r/`, `s/`, `cy/`, `p/`, and `a/`, not `N/`, `E/`, `CR/`, `C/`, etc.
 
-* Commands that do not take in parameters (such as `undo`, `help`, `exit`, and `clear`) strictly require no extraneous parameters. e.g. if the command specifies `help 123`, it will be rejected with an invalid command format error. However, harmless trailing spaces (e.g., `help   `) will be safely ignored.
+* Commands that do not take in parameters (such as `undo`, `help`, `exit`, and `clear`) strictly require no extraneous parameters.<br>
+e.g. if the command specifies `help 123`, it will be rejected with an invalid command format error. However, harmless trailing spaces (e.g., `help   `) will be safely ignored.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </box>
