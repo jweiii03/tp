@@ -23,7 +23,7 @@ InternTrack is a **desktop app for managing application-related contacts**, opti
 1. Copy the file to the folder you want to use as the _home folder_ for your InternTrack.
 
 1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar interntrack.jar` command to run the application.<br>
-   A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
+   A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br><br>
    ![Ui](images/release_v1.5/Ui.png)
 
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
@@ -143,6 +143,7 @@ Format: `edit INDEX [n/NAME] [e/EMAIL] [cr/CONTACT_ROLE] [c/COMPANY] [r/ROLE] [s
 * Edits the opportunity contact at the specified `INDEX`. The index refers to the index number shown in the displayed opportunity contact list. The index **must be a positive integer** 1, 2, 3, ...​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
+* If the input values are identical to the opportunity contact's current values, the edit is still treated as successful and the success message will be shown.
 * An edit that results in the same Email, Company, Role, and Cycle as an existing record in the tracker will be rejected.
 * To clear an existing phone number, use `p/` with no value (e.g. `edit 1 p/`).
 * **Note:** If multiple fields are invalid, all errors are shown at once as a numbered list, so you can fix all issues in one go.
