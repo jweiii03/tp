@@ -582,24 +582,25 @@ Preconditions: At least one opportunity contact exists in the unarchived/active 
 
 **Use case: UC08 — Unarchive an opportunity contact**
 
-Preconditions: At least one opportunity contact exists in the archived list.
+Preconditions: At least one archived opportunity contact exists.
 
 **MSS**
 
-1.  User requests to <u>list archived opportunity contacts (UC03)</u>.
-2.  System shows the list of archived opportunity contacts.
-3.  User requests to unarchive a specific opportunity contact from the archived list.
-4.  System unarchives the specified opportunity contact.
-5.  System confirms that the opportunity contact has been unarchived.
+1. User requests to show archived opportunity contacts.
+2. System shows the list of archived opportunity contacts.
+3. User requests to unarchive a specific opportunity contact from the displayed archived list.
+4. System unarchives the specified opportunity contact.
+5. System confirms that the opportunity contact has been unarchived.
 
-    Use case ends.
+   Use case ends.
 
 **Extensions**
 
 * 3a. The specified index is invalid.
-    * 3a1. System informs the user that the index is invalid.
 
-      Use case ends.
+  * 3a1. System informs the user that the index is invalid.
+
+    Use case ends.
 
 **Use case: UC09 — Undo a command**
 
