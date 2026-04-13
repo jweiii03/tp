@@ -1143,10 +1143,12 @@ the previous data could not be loaded, and advises the user to restore or repair
 Where feasible, the app should also avoid overwriting the problematic file until the user has acknowledged the issue
 or chosen to start afresh.
 
-4. **Improve error messages for out-of-range index values**: Commands that use displayed list indices, such as
+5. **Improve error messages for out-of-range index values**: Commands that use displayed list indices, such as
 `delete`, `edit`, `archive`, and `unarchive`, currently parse indices as Java `int` values. When a user enters an
 extremely large positive number outside the supported range, parsing fails before normal index validation and the app
 may show a generic invalid command format message instead of the usual invalid index message. Although such index
 values are not realistic for normal InternTrack usage, we plan to refine the parser to detect out-of-range numeric
 index inputs and report them as invalid indices. This improves error-message consistency without changing the
 practical number of opportunity contacts the app is expected to handle.
+
+6. **Preserve the current scope/filter after `archive` and `unarchive`**: The current archive workflow is intentionally asymmetric. `archive` can be executed only from active lists in the **Main** view, including active filtered results from `find ...`, but it always resets the display to the full **Main** list after success. `unarchive` can be executed only from archived lists in the **Archive** view, including archived filtered results from `find a/...`, and it preserves the current archived scope/filter after success. We plan to improve this by making both commands preserve the user’s current scope/filter after a successful `archive` or `unarchive`, and simply remove the affected record from the displayed list if it no longer matches that scope. Example: if the user runs `find Stripe` and then `archive 1`, the app should remain on the filtered active `Stripe` results with the archived record removed; if the user runs `find a/Stripe` and then `unarchive 1`, the app should remain on the filtered archived `Stripe` results with the unarchived record removed.
