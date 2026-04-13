@@ -909,7 +909,7 @@ The test cases below focus on:
    1. Other invalid commands to try: `find`, `find c/`<br>
       Expected: No search is performed. Error details are shown in the status message.
 
-1. Unsupported `find` prefixes are treated as plain name keywords (current behavior)
+1. Unsupported `find` prefixes are treated as plain name keywords
 
    1. Prerequisites: Ensure at least one active contact name contains `Jane`.
 
