@@ -144,7 +144,7 @@ Format: `edit INDEX [n/NAME] [e/EMAIL] [cr/CONTACT_ROLE] [c/COMPANY] [r/ROLE] [s
 * Edits the opportunity contact at the specified `INDEX`. The index refers to the index number shown in the displayed opportunity contact list. The index **must be a positive integer** 1, 2, 3, ...​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
-* An edit that results in the same Email, Company, Role, and Cycle as an existing record in the tracker will be rejected. Two opportunities are considered duplicates only when **all four** of these fields match — sharing just an email (or any single field) is not sufficient.
+* An edit that results in the same Email, Company, Role, and Cycle as an existing record in the tracker, including archived records, will be rejected. Two opportunities are considered duplicates only when **all four** of these fields match — sharing just an email (or any single field) is not sufficient.
 * To clear an existing phone number, use `p/` with no value (e.g. `edit 1 p/`).
 * **Note:** If multiple fields are invalid, all errors are shown at once as a numbered list, so you can fix all issues in one go.
 
