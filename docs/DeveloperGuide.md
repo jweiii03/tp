@@ -1115,3 +1115,11 @@ InternTrack shows a clear user-facing warning when the existing data file is cor
 the previous data could not be loaded, and advises the user to restore or repair the file from a backup if needed.
 Where feasible, the app should also avoid overwriting the problematic file until the user has acknowledged the issue
 or chosen to start afresh.
+
+4. **Improve error messages for out-of-range index values**: Commands that use displayed list indices, such as
+`delete`, `edit`, `archive`, and `unarchive`, currently parse indices as Java `int` values. When a user enters an
+extremely large positive number outside the supported range, parsing fails before normal index validation and the app
+may show a generic invalid command format message instead of the usual invalid index message. Although such index
+values are not realistic for normal InternTrack usage, we plan to refine the parser to detect out-of-range numeric
+index inputs and report them as invalid indices. This improves error-message consistency without changing the
+practical number of opportunity contacts the app is expected to handle.
