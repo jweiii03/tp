@@ -1083,7 +1083,7 @@ The test cases below focus on:
 
 Team size: 5
 
-1. Refine duplicate handling for shared-mailbox contacts in `add`: The current `add` logic rejects any new record
+1. **Refine duplicate handling for shared-mailbox contacts in `add`**: The current `add` logic rejects any new record
 when `Email + Company + Role + Cycle` matches an existing record, which can wrongly block distinct contacts who use
 the same generic email (e.g., `internships@company.com`). We plan to keep a strict rejection only when **all fields**
  match after normalization (`Name`, `Email`, `ContactRole`, `Company`, `Role`, `Cycle`, `Status`, `Phone`), and
