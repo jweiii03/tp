@@ -384,6 +384,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *` | new user exploring InternTrack | have quick access to the user guide from within the app | can learn how to use the commands when I get stuck |
 | `* *` | keyboard-oriented user | exit the app using a command | can close it quickly without leaving the keyboard |
 | `* *` | busy applicant juggling many applications | filter records by company | can focus on all contacts related to one organization at a time |
+| `* *` | busy applicant juggling many applications | recover from accidental destructive actions | one mistake does not wipe critical records |
 | `*` | undergraduate applicant | tag or classify contact records | can separate different kinds of contacts or opportunities quickly |
 | `*` | undergraduate applicant | store short notes for a contact record | can remember context such as referrals, follow-up points, or interview details |
 | `*` | busy applicant juggling many applications | be warned about potential duplicate contact records | do not track the same contact twice unnecessarily |
@@ -392,7 +393,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*` | end-of-cycle user | review outcomes by cycle | can improve my application strategy next time |
 | `*` | frequent user | search within notes | can quickly retrieve context like “referral,” “visa,” or “follow-up” |
 | `*` | frequent user | mark records that require follow-up | do not forget to take action |
-| `*` | busy applicant juggling many applications | recover from accidental destructive actions | one mistake does not wipe critical records |
 | `*` | frequent user | sort records by company or role | can review my contacts in a more organized way |
 | `*` | busy applicant juggling many applications | view only records that require follow-up soon | can quickly identify the contacts that need action next |
 | `*` | end-of-cycle user | export my contact records for a cycle | can keep an external backup or review them outside the app later |
@@ -1117,3 +1117,12 @@ as a result of this normalization (i.e., the user accidentally typed extra space
 duplicate warning instead of an immediate hard rejection, so the user understands why their input was flagged. 
 Example: `add ... c/Google r/SWE  Intern ...` and `add ... c/Google r/SWE Intern ...` (with the same Email and Cycle) 
 should trigger a duplicate warning.
+
+4. **Warn users when the data file is corrupted or unreadable on startup**: The current startup behavior follows
+NFR 8 by not crashing and starting with an empty data set when an existing storage file cannot be read or parsed.
+However, this can be confusing because users may not realize that their previous data file was invalid and may
+accidentally overwrite recoverable data after the next successful autosave. We plan to revise this behavior so that
+InternTrack shows a clear user-facing warning when the existing data file is corrupted or unreadable, explains that
+the previous data could not be loaded, and advises the user to restore or repair the file from a backup if needed.
+Where feasible, the app should also avoid overwriting the problematic file until the user has acknowledged the issue
+or chosen to start afresh.
