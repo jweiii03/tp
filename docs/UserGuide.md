@@ -258,6 +258,8 @@ Format:
 * `archive cycle CYCLE` archives all active opportunity contacts with the specified cycle.
 * This command can only be used while in the **Main** view.
 * A cycle must be one of (SUMMER, WINTER, S1, S2) followed by a space and a 4-digit year (e.g. SUMMER 2025). CLI aliases like `SEM 1`, `semester 2`, and `SemESTer1` are also accepted and normalized to `S1`/`S2`.
+* This command works from both the full active list shown by `list` and active filtered results shown by `find ...`.
+* After a successful `archive`, InternTrack resets the display to the full **Main** list, even if the command was run from active filtered results.
 * The command word `archive` is case-insensitive.
   e.g. `archive 2` and `ArChIvE 2` are both valid.
 * In `archive cycle CYCLE`, the sub-keyword `cycle` is also case-insensitive.
@@ -269,6 +271,12 @@ Examples:
 * `archive cycle S1 2026` archives all active opportunity contacts for `S1 2026`.
 * `archive cycle S2 2026` archives all active opportunity contacts for `S2 2026`.
 
+<box type="info" seamless>
+
+**Note:** `archive` only works while you are viewing active records in the **Main** view. This includes both the full active list shown by `list` and active filtered results shown by `find ...`. After a successful `archive`, InternTrack resets to the full **Main** list. If you want to inspect archived records after archiving, run `list archive` or `find a/...`.
+
+</box>
+
 ![archive](images/release_v1.5/Archive.png)
 
 ### Unarchiving an opportunity contact : `unarchive`
@@ -279,14 +287,21 @@ Format: `unarchive INDEX [MORE_INDICES]...`
 
 * Unarchives the opportunity contact(s) at the specified `INDEX`es.
 * The index refers to the index number shown in the displayed archived opportunity contact list.
-* This works for both `list archive` results and archived search results from `find a/ ...`.
+* This works for both `list archive` results and archived search results from `find a/...`.
 * The index **must be a positive integer** 1, 2, 3, ...​
 * If multiple indices are provided, they must be separated by spaces.
 * Duplicate indices are not allowed.
+* This command only works while you are viewing archived records, i.e. after `list archive` or `find a/...`.
+* After a successful `unarchive`, InternTrack stays in the current archived view instead of switching to the active list.
 
 Examples:
 * `list archive` followed by `unarchive 2` unarchives the 2nd archived opportunity contact in the tracker.
 * `list archive` followed by `unarchive 1 2 3` unarchives the 1st, 2nd, and 3rd archived opportunity contacts in the displayed results.
+<box type="info" seamless>
+
+**Note:** `unarchive` preserves your current archived scope after success. If you ran it from `list archive`, InternTrack remains in the full **Archive** list. If you ran it from `find a/...`, InternTrack remains in that archived filtered view. In both cases, the unarchived record disappears from the displayed list because it is no longer archived. Run `list` if you want to return to the active list.
+
+</box>
 
 ![unarchive](images/release_v1.5/Unarchive.png)
 
@@ -373,7 +388,7 @@ Furthermore, certain edits can cause the InternTrack to behave in unexpected way
 **A:** The specified index does not match any record in the currently displayed list. Use the index shown in the latest displayed list.
 
 **Q: Can an archived record be restored?**
-**A:** Yes. First use the `list archive` command to view archived opportunity contacts, then use the `unarchive` command to restore the selected archived opportunity record to the active list.
+**A:** Yes. First use `list archive` or `find a/...` to view archived opportunity contacts, then use `unarchive` to restore the selected archived record. After a successful `unarchive`, InternTrack remains in the current archived view, so run `list` if you want to switch back to the active list and view the restored record there.
 
 **Q: What happens if the data file cannot be read?**
 **A:** If the data file cannot be read due to a loading error, InternTrack starts with an empty data set instead of crashing.

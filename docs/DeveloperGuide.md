@@ -251,6 +251,8 @@ The data archiving feature allows users to hide selected opportunity records fro
 
 This is implemented by storing an archived flag in each Opportunity. Archive and unarchive commands update this flag accordingly. The Model uses separate predicates to display active records and archived records. The archived state is also saved in the storage file so that it persists across sessions.
 
+Current view behavior is intentionally asymmetric. `archive` only works from active lists in the **Main** view, including active filtered results from `find ...`, and resets the display to the full **Main** list after success. `unarchive` only works from archived lists in the **Archive** view, including archived filtered results from `find a/...`, and preserves the current archived scope/filter after success. In both cases, the updated record disappears from the displayed list if it no longer matches that list.
+
 This approach keeps the implementation simple because it extends the existing record structure instead of introducing a separate archive data structure.
 
 Note that archived records remain subject to uniqueness enforcement. `isSameOpportunity()` does not compare the `isArchived` flag, so an archived and an active record with the same Email, Company, Role, and Cycle cannot coexist in the tracker. Attempting to add a record whose identity matches an archived entry will be rejected. The user should use `unarchive` to restore the archived entry instead.
@@ -521,15 +523,15 @@ Preconditions: At least one opportunity contact exists.
 
 **Use case: UC06 — Archive an opportunity contact**
 
-Preconditions: At least one opportunity contact exists in the unarchived/active list.
+Preconditions: At least one opportunity contact exists in the currently displayed active list in the **Main** view.
 
 **MSS**
 
-1.  User requests to <u>list unarchived/active opportunity contacts (UC03)</u>.
-2.  System shows the list of unarchived opportunity contacts.
-3.  User requests to archive a specific opportunity contact from the unarchived list.
+1.  User requests to show active opportunity contacts, either through `list` or `find ...`.
+2.  System shows the currently displayed active opportunity contacts.
+3.  User requests to archive a specific opportunity contact from the displayed active list.
 4.  System archives the specified opportunity contact.
-5.  System confirms that the opportunity contact has been archived.
+5.  System confirms that the opportunity contact has been archived and resets the display to the full **Main** list.
 
     Use case ends.
 
@@ -568,15 +570,15 @@ Preconditions: At least one opportunity contact exists in the unarchived/active 
 
 **Use case: UC08 — Unarchive an opportunity contact**
 
-Preconditions: At least one archived opportunity contact exists.
+Preconditions: At least one archived opportunity contact exists in the currently displayed archived list in the **Archive** view.
 
 **MSS**
 
-1. User requests to show archived opportunity contacts.
-2. System shows the list of archived opportunity contacts.
+1. User requests to show archived opportunity contacts, either through `list archive` or `find a/...`.
+2. System shows the currently displayed archived opportunity contacts.
 3. User requests to unarchive a specific opportunity contact from the displayed archived list.
 4. System unarchives the specified opportunity contact.
-5. System confirms that the opportunity contact has been unarchived.
+5. System confirms that the opportunity contact has been unarchived and keeps the current archived scope/filter unchanged.
 
    Use case ends.
 
@@ -742,7 +744,10 @@ The test cases below focus on:
 
 1. Expected:
    * Each command succeeds.
-   * The view indicator updates correctly between `Main` and `Archive`.
+   * After `archive 1`, the archived contact is removed from the displayed active results and the app resets to the full `Main` list.
+   * After `list archive`, the `Archive` tab is highlighted.
+   * After `unarchive 1`, the unarchived contact is removed from the displayed archived list and the app remains in the current archived view.
+   * After `list`, the active list is shown again and the `Main` tab is highlighted.
    * The deleted contact is restored after `undo`.
 
 ### Help and list commands
@@ -939,14 +944,19 @@ The test cases below focus on:
    1. Prerequisites: List all active opportunity contacts using the `list` command. Ensure there is at least one entry.
 
    1. Test case: `archive 1`<br>
-      Expected: The first active opportunity contact is archived and no longer shown in the active list. A success message is shown.
+      Expected: The first active opportunity contact is archived, removed from the displayed active list, and the app resets to the full `Main` list. A success message is shown.
+   
+   1. Prerequisites: Run `find Stripe` and ensure there is at least one active result shown.
+
+   1. Test case: `archive 1`<br>
+      Expected: The first displayed active opportunity contact is archived. The app resets to the full `Main` list, so the previous `find` filter is cleared. A success message is shown.
 
 1. Cycle-based archive
 
    1. Prerequisites: Ensure there is at least one active opportunity contact with cycle `SUMMER 2026`.
 
    1. Test case: `archive cycle SUMMER 2026`<br>
-      Expected: All active opportunity contacts with cycle `SUMMER 2026` are archived. A success message is shown.
+      Expected: All active opportunity contacts with cycle `SUMMER 2026` are archived, removed from the displayed active list, and the app resets to the full `Main` list. A success message is shown.
 
    1. Test case: `archive cycle INVALID 2026`<br>
       Expected: No opportunity contact is archived. Error details are shown in the status message.
@@ -987,14 +997,14 @@ The test cases below focus on:
    1. Prerequisites: Show archived opportunity contacts using the `list archive` command. Ensure there is at least one entry.
 
    1. Test case: `unarchive 1`<br>
-      Expected: The first archived opportunity contact is restored to the active list. A success message is shown.
+      Expected: The first archived opportunity contact is unarchived, removed from the displayed archived list, and the app remains in the full `Archive` view. A success message is shown.
 
 1. Unarchiving from archived find results
 
    1. Prerequisites: Run `find a/Jane c/Stripe` and ensure there is at least one archived result shown.
 
    1. Test case: `unarchive 1`<br>
-      Expected: The first displayed archived opportunity contact is restored to the active list. A success message is shown.
+      Expected: The first displayed archived opportunity contact is unarchived, removed from the displayed archived filtered results, and the app remains in that archived filtered view. A success message is shown.
 
 ### Undo edge cases
 
@@ -1133,7 +1143,7 @@ the previous data could not be loaded, and advises the user to restore or repair
 Where feasible, the app should also avoid overwriting the problematic file until the user has acknowledged the issue
 or chosen to start afresh.
 
-4. **Improve error messages for out-of-range index values**: Commands that use displayed list indices, such as
+5. **Improve error messages for out-of-range index values**: Commands that use displayed list indices, such as
 `delete`, `edit`, `archive`, and `unarchive`, currently parse indices as Java `int` values. When a user enters an
 extremely large positive number outside the supported range, parsing fails before normal index validation and the app
 may show a generic invalid command format message instead of the usual invalid index message. Although such index
@@ -1141,5 +1151,7 @@ values are not realistic for normal InternTrack usage, we plan to refine the par
 index inputs and report them as invalid indices. This improves error-message consistency without changing the
 practical number of opportunity contacts the app is expected to handle.
 
-5. **Allow escaped forward slashes in slash-restricted text fields for `add` and `edit`**: The current parser and field validation block `/` in values such as `n/NAME`, so legitimate inputs such as `Asha s/o Kumar` cannot be stored. We plan to support escaped slashes by accepting `\/` as a literal slash during parsing, and to update the corresponding field validations so `/` is allowed in stored values for affected fields such as `Name` (and similarly `Company`, `Role`, and `ContactRole`, if they continue to share the same restriction). **Rule:** a literal slash in these fields is accepted only when written as `\/`; any unescaped `/` in these fields is rejected with a clear message to use `\/`. This keeps parser behavior deterministic and prevents accidental prefix interpretation (e.g., ` s/o` being parsed as the `s/` prefix).
+6. **Allow escaped forward slashes in slash-restricted text fields for `add` and `edit`**: The current parser and field validation block `/` in values such as `n/NAME`, so legitimate inputs such as `Asha s/o Kumar` cannot be stored. We plan to support escaped slashes by accepting `\/` as a literal slash during parsing, and to update the corresponding field validations so `/` is allowed in stored values for affected fields such as `Name` (and similarly `Company`, `Role`, and `ContactRole`, if they continue to share the same restriction). **Rule:** a literal slash in these fields is accepted only when written as `\/`; any unescaped `/` in these fields is rejected with a clear message to use `\/`. This keeps parser behavior deterministic and prevents accidental prefix interpretation (e.g., ` s/o` being parsed as the `s/` prefix).
 Example: `add n/Asha s\/o Kumar e/asha@example.com cr/recruiter c/Acme r/SWE Intern s/SAVED cy/SUMMER 2026` should be parsed, pass validation, and be saved and displayed as `Asha s/o Kumar`. `add n/Asha s/o Kumar ...` (unescaped slash) should be rejected with guidance to use `\/`.
+
+7. **Preserve the current scope/filter after `archive` and `unarchive`**: The current archive workflow is intentionally asymmetric. `archive` can be executed only from active lists in the **Main** view, including active filtered results from `find ...`, but it always resets the display to the full **Main** list after success. `unarchive` can be executed only from archived lists in the **Archive** view, including archived filtered results from `find a/...`, and it preserves the current archived scope/filter after success. We plan to improve this by making both commands preserve the user’s current scope/filter after a successful `archive` or `unarchive`, and simply remove the affected record from the displayed list if it no longer matches that scope. Example: if the user runs `find Stripe` and then `archive 1`, the app should remain on the filtered active `Stripe` results with the archived record removed; if the user runs `find a/Stripe` and then `unarchive 1`, the app should remain on the filtered archived `Stripe` results with the unarchived record removed.
