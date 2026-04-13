@@ -23,7 +23,7 @@ InternTrack is a **desktop app for managing application-related contacts**, opti
 1. Copy the file to the folder you want to use as the _home folder_ for your InternTrack.
 
 1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar interntrack.jar` command to run the application.<br>
-   A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
+   A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br><br>
    ![Ui](images/release_v1.5/Ui.png)
 
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
@@ -111,6 +111,7 @@ Format: `add n/NAME e/EMAIL cr/CONTACT_ROLE c/COMPANY r/ROLE s/STATUS cy/CYCLE [
 * `p/PHONE` is optional and can be omitted if the contact's phone number is not available. Phone numbers must contain 3 to 15 digits, and must either start with a digit or start with `+` immediately followed by a digit. They must end with a digit. Spaces, hyphens, and parentheses are allowed within the phone number (e.g. `+65 9123 4567`, `+1-800-555-0100`, `+1 (212) 555-0199`). Leading and trailing whitespace is trimmed before saving; otherwise, the entered phone-number formatting is preserved.
 * `STATUS` must be one of: `SAVED`, `APPLIED`, `OA`, `INTERVIEW`, `OFFER`, `REJECTED`, `WITHDRAWN`. Matching is case-insensitive, so inputs like `saved` or `interview` are also accepted and stored in uppercase.
 * `cy/CYCLE` is mandatory and must be one of (SUMMER, WINTER, S1, S2) followed by a space and a 4-digit year (e.g. SUMMER 2025), where `S1` and `S2` refer to Semester 1 and Semester 2 respectively. CLI aliases like `SEM 1`, `semester 2`, and `SemESTer1` are also accepted and normalized to `S1`/`S2`.
+* New opportunity contacts are always added to the active **Main** list. If you run `add` while viewing the **Archive** list, InternTrack switches back to the **Main** list after the contact is added. To archive the new contact, use `archive INDEX` after locating it in the **Main** list.
 * Archived records still count toward duplicate detection. If you try to add a record with the same Email, Company, Role, and Cycle as an archived entry, the add will be rejected. Use `unarchive` to restore the existing entry instead.
 * **Note:** Two opportunities are only considered duplicates when **all four** of Email, Company, Role, and Cycle match. A partial match (e.g. same email but different company) is not considered a duplicate.
 * **Note:** If multiple fields are invalid, all errors are shown at once as a numbered list, so you can fix all issues in one go.
@@ -144,6 +145,7 @@ Format: `edit INDEX [n/NAME] [e/EMAIL] [cr/CONTACT_ROLE] [c/COMPANY] [r/ROLE] [s
 * Edits the opportunity contact at the specified `INDEX`. The index refers to the index number shown in the displayed opportunity contact list. The index **must be a positive integer** 1, 2, 3, ...​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
+* If the input values are identical to the opportunity contact's current values, the edit is still treated as successful and the success message will be shown.
 * An edit that results in the same Email, Company, Role, and Cycle as an existing record in the tracker, including archived records, will be rejected. Two opportunities are considered duplicates only when **all four** of these fields match — sharing just an email (or any single field) is not sufficient.
 * To clear an existing phone number, use `p/` with no value (e.g. `edit 1 p/`).
 * **Note:** If multiple fields are invalid, all errors are shown at once as a numbered list, so you can fix all issues in one go.
@@ -151,6 +153,12 @@ Format: `edit INDEX [n/NAME] [e/EMAIL] [cr/CONTACT_ROLE] [c/COMPANY] [r/ROLE] [s
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st opportunity contact to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 1 p/` Clears the phone number of the 1st opportunity contact.
+
+<box type="info" seamless>
+
+**Note:** `edit` works on the currently displayed list. If you are viewing archived results via `list archive` or `find a/...`, `edit` updates the selected archived record and keeps it archived. Run `list` first if you want to edit an active record.
+
+</box>
 
 ![edit](images/release_v1.5/Edit.png)
 
@@ -165,6 +173,7 @@ Format:
 * `find a/NAME_KEYWORD [MORE_NAME_KEYWORDS]... [c/COMPANY_KEYWORD [MORE_COMPANY_KEYWORDS]...]`
 * `find a/ c/COMPANY_KEYWORD [MORE_COMPANY_KEYWORDS]...`
 
+* Name searches do not use the `n/` prefix. Inputs such as `find n/Jane` or `find a/ n/Jane` are treated as searches for the literal keyword `n/Jane`; use `find Jane` or `find a/Jane` instead.
 * The search is case-insensitive. e.g. `jan` will match `Jane`
 * Partial words are matched for both name and company. e.g. `find jan c/Tik` matches `Jane @ TikTok`
 * Multiple name keywords use **OR** matching — a contact is returned if their name matches any of the keywords. e.g. `find alice bob` returns contacts named "Alice Tan" or "Bob Lim".
@@ -174,6 +183,7 @@ Format:
 * Use `a/KEYWORD` to search archived opportunities by name, or `a/ c/COMPANY` to search by company only.
 * `a/` can be followed by a space or attached directly to the first name keyword. e.g. `find a/ jan` and `find a/jan` are both valid. Name keywords must follow `a/`, not precede it. e.g. `find jan a/` is invalid.
 * `a/` may be attached only to archived **name** keywords, e.g. `find a/jane`. For archived **company-only** search, a space is required: `find a/ c/Stripe`. Do not use `find a/c/Stripe` as it will be treated as an archived name search instead of a company search.
+* Only `a/` (archive scope) and `c/` (company filter) are supported in `find`. If no supported filter is detected, the entire input is treated as name keywords. For example, `find Jane r/SWE` is interpreted as searching for names containing `Jane` or `r/SWE`, which usually returns no matches for `r/SWE`.
 * `find`, `find c/`, `find a/`, `find google a/`, and `find a/ c/` are invalid because at least one search term must be provided after `a/` or as a standalone keyword.
 
 Examples:
@@ -202,6 +212,12 @@ Format: `delete INDEX [MORE_INDICES]...`
 Examples:
 * `list` followed by `delete 2` deletes the 2nd opportunity contact in the tracker.
 * `find c/Stripe` followed by `delete 1 2 3` deletes the 1st, 2nd, and 3rd opportunity contacts in the displayed results.
+
+<box type="warning" seamless>
+
+**Note:** `delete` works on the currently displayed list. If you are viewing archived results via `list archive` or `find a/...`, `delete` permanently removes the selected archived record. Run `list` first if you want to delete from the active list.
+
+</box>
 
 ![delete](images/release_v1.5/Delete.png)
 
@@ -268,6 +284,12 @@ Format: `undo`
 **Caution:**
 * The `undo` command only works if there is a previous state to restore. If you have just launched the app or have already undone all recent commands, executing `undo` will fail with a "No more commands to undo!" error.
 * Read-only commands (like `list` or `find`) do not modify the tracker's state and cannot be undone.
+
+<box type="info" seamless>
+
+**Note:** `undo` restores the previous opportunity data only. It keeps the current list filter (including any active `find`) and the current **Main/Archive** tab unchanged, and applies that current view to the restored data. If the list looks empty or incomplete after `undo`, run `list`, `list archive`, or the relevant `find` command to switch to the view you expect.
+
+</box>
 
 ![undo](images/release_v1.5/Undo.png)
 

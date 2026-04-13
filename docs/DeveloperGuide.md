@@ -196,7 +196,7 @@ Step 3. The user executes `add n/David …​` to add a new opportunity contact.
 
 </box>
 
-Step 4. The user now decides that adding the opportunity contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous tracker state, and restores the tracker to that state.
+Step 4. The user now decides that adding the opportunity contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous tracker state, and restore the tracker data to that state.
 
 <puml src="diagrams/UndoState3.puml" alt="UndoState3" />
 
@@ -244,8 +244,6 @@ The following activity diagram summarizes what happens when a user executes a ne
 * **Alternative 2:** Individual command knows how to undo by itself.
   * Pros: Will use less memory (e.g. for `delete`, just save the opportunity record being deleted).
   * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
 
 ### Data archiving
 
@@ -374,9 +372,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *` | busy applicant juggling many applications | record a stage or status for a contact record | know my current progress with that contact and opportunity |
 | `* *` | undergraduate applicant | store contact details such as name and email | can follow up without searching through chats or email threads |
 | `* *` | undergraduate applicant | store a contact role for each record | can tell whether someone is a recruiter, interviewer, referrer, or hiring manager |
-| `* *` | busy applicant juggling many applications | record a deadline for a contact record | can keep track of upcoming follow-ups, interviews, or submission-related actions |
-| `* *` | busy applicant juggling many applications | view only records in a chosen stage | can batch-handle similar follow-ups |
-| `* *` | busy applicant juggling many applications | view records ordered by upcoming deadlines | know what to prioritize next |
 | `* *` | busy applicant juggling many applications | remove multiple contact records at once | can clean up outdated records more efficiently |
 | `* *` | end-of-cycle user | archive old records | my current list stays focused without losing history |
 | `* *` | end-of-cycle user | unarchive previously archived records | can restore older records when I need to revisit them |
@@ -384,22 +379,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *` | new user exploring InternTrack | have quick access to the user guide from within the app | can learn how to use the commands when I get stuck |
 | `* *` | keyboard-oriented user | exit the app using a command | can close it quickly without leaving the keyboard |
 | `* *` | busy applicant juggling many applications | filter records by company | can focus on all contacts related to one organization at a time |
-| `*` | undergraduate applicant | tag or classify contact records | can separate different kinds of contacts or opportunities quickly |
-| `*` | undergraduate applicant | store short notes for a contact record | can remember context such as referrals, follow-up points, or interview details |
+| `* *` | busy applicant juggling many applications | recover from accidental destructive actions | one mistake does not wipe critical records |
 | `*` | busy applicant juggling many applications | be warned about potential duplicate contact records | do not track the same contact twice unnecessarily |
 | `*` | frequent user | maintain consistent stage labels | filtering and review remain reliable over time |
-| `*` | frequent user | extract key contact information from selected records | can paste it into an email client quickly |
-| `*` | end-of-cycle user | review outcomes by cycle | can improve my application strategy next time |
-| `*` | frequent user | search within notes | can quickly retrieve context like “referral,” “visa,” or “follow-up” |
-| `*` | frequent user | mark records that require follow-up | do not forget to take action |
-| `*` | busy applicant juggling many applications | recover from accidental destructive actions | one mistake does not wipe critical records |
-| `*` | frequent user | sort records by company or role | can review my contacts in a more organized way |
-| `*` | busy applicant juggling many applications | view only records that require follow-up soon | can quickly identify the contacts that need action next |
-| `*` | end-of-cycle user | export my contact records for a cycle | can keep an external backup or review them outside the app later |
-| `*` | frequent user | filter records by contact role | can focus separately on recruiters, interviewers, referrers, or hiring managers |
-| `*` | frequent user | view a summary of how many records are in each stage | can quickly understand the overall state of my application-related contacts |
-
-*{More to be added}*
 
 ### Use cases
 
@@ -606,7 +588,7 @@ Preconditions: At least one opportunity contact exists in the archived list.
 **MSS**
 
 1.  User requests to undo the previous mutating command.
-2.  System restores the tracker to its previous state.
+2.  System restores the tracker data to its previous state.
 3.  System displays a success message.
 
     Use case ends.
@@ -617,6 +599,8 @@ Preconditions: At least one opportunity contact exists in the archived list.
     * 1a1. System shows an error message indicating there are no more commands to undo.
 
       Use case ends.
+
+**Note:** `undo` restores the underlying tracker data only. It does not modify the current UI state, including the currently displayed filtered list and the selected Main/Archive view.
 
 **Use case: UC10 — Clear opportunity contact**
 
@@ -909,6 +893,14 @@ The test cases below focus on:
    1. Other invalid commands to try: `find`, `find c/`<br>
       Expected: No search is performed. Error details are shown in the status message.
 
+1. Unsupported `find` prefixes are treated as plain name keywords
+
+   1. Prerequisites: Ensure at least one active contact name contains `Jane`.
+
+   1. Test case: `find Jane r/SWE`<br>
+      Expected: The command is accepted as a name-keyword search (not as a prefixed role filter). Results match names containing
+      `Jane` or `r/SWE` (typically only `Jane` matches). No unsupported-prefix-specific error is shown.
+
 ### Delete, archive, and unarchive edge cases
 
 1. Deleting an opportunity contact
@@ -968,6 +960,22 @@ The test cases below focus on:
 
    1. Test case: `unarchive 1`<br>
       Expected: No opportunity contact is unarchived. Error details are shown because unarchiving only works in the archived list.
+
+1. Commands that work in both views
+
+   1. Deleting from the archived list
+
+      1. Prerequisites: Show archived opportunities using `list archive`. Ensure there is at least one entry.
+
+      1. Test case: `delete 1`<br>
+         Expected: The first displayed archived opportunity contact is permanently deleted. A success message is shown.
+
+   1. Editing from the archived list
+
+      1. Prerequisites: Show archived opportunities using `list archive`. Ensure there is at least one entry.
+
+      1. Test case: `edit 1 s/INTERVIEW`<br>
+         Expected: The first displayed archived opportunity contact is updated and remains archived. A success message is shown.
 
 1. Unarchiving from the archived list
 
@@ -1078,3 +1086,52 @@ The test cases below focus on:
 
    1. Execute the same `add` command again.<br>
       Expected: The command now succeeds and the new contact is saved normally.
+
+## **Appendix: Planned Enhancements**
+
+Team size: 5
+
+1. **Refine duplicate handling for shared-mailbox contacts in `add`**: The current `add` logic rejects any new record
+when `Email + Company + Role + Cycle` matches an existing record, which can wrongly block distinct contacts who use
+the same generic email (e.g., `internships@company.com`). We plan to keep a strict rejection only when **all fields**
+ match after normalization (`Name`, `Email`, `ContactRole`, `Company`, `Role`, `Cycle`, `Status`, `Phone`), and
+change partial matches on the core tuple (`Email + Company + Role + Cycle`) into a **duplicate warning** instead of
+immediate rejection when at least one of `Name`/`ContactRole`/`Status`/`Phone` differs. Example: if `add n/Amy Lee
+e/internships@stripe.com cr/recruiter c/Stripe r/SWE Intern s/APPLIED cy/SUMMER 2026` exists, then `add n/Ben Tan
+e/internships@stripe.com cr/hiring manager c/Stripe r/SWE Intern s/OA cy/SUMMER 2026` should show a
+possible-duplicate warning but still be allowed if the user decides to proceed with the addition or edit.
+
+2. **Extend `find` to support additional prefixed filters with explicit errors for unsupported prefixes**: The current
+`find` implementation supports name keywords by default and `c/` for company (with optional `a/` archive scope). Inputs
+such as `find Jane r/SWE` are currently interpreted as plain name keywords instead of raising a targeted error for
+unsupported filter prefixes. We plan to introduce richer prefixed filtering (e.g., role/status/cycle) and, in the
+interim, provide clearer parser feedback when unsupported prefixes are used.
+
+3. **Normalize internal whitespace in `Company` and `Role` fields and show a duplicate warning instead of immediate rejection**: 
+The current duplicate detection compares `Company` and `Role` using case-insensitive string matching but 
+does not collapse internal whitespace. This means entries such as `r/SWE Intern` and `r/SWE  Intern` (double space)
+are treated as distinct, bypassing duplicate detection. We plan to normalize multiple consecutive spaces into a 
+single space (e.g., using `.replaceAll("\\s+", " ")`) when `Company` and `Role` values are created, so that
+normalization is applied consistently to both CLI input and data loaded from JSON storage, similar to how `Cycle`
+input is already normalized during parsing before the `Cycle` object is constructed. Additionally, when a duplicate is detected 
+as a result of this normalization (i.e., the user accidentally typed extra spaces), the system will show a 
+duplicate warning instead of an immediate hard rejection, so the user understands why their input was flagged. 
+Example: `add ... c/Google r/SWE  Intern ...` and `add ... c/Google r/SWE Intern ...` (with the same Email and Cycle) 
+should trigger a duplicate warning.
+
+4. **Warn users when the data file is corrupted or unreadable on startup**: The current startup behavior follows
+NFR 8 by not crashing and starting with an empty data set when an existing storage file cannot be read or parsed.
+However, this can be confusing because users may not realize that their previous data file was invalid and may
+accidentally overwrite recoverable data after the next successful autosave. We plan to revise this behavior so that
+InternTrack shows a clear user-facing warning when the existing data file is corrupted or unreadable, explains that
+the previous data could not be loaded, and advises the user to restore or repair the file from a backup if needed.
+Where feasible, the app should also avoid overwriting the problematic file until the user has acknowledged the issue
+or chosen to start afresh.
+
+4. **Improve error messages for out-of-range index values**: Commands that use displayed list indices, such as
+`delete`, `edit`, `archive`, and `unarchive`, currently parse indices as Java `int` values. When a user enters an
+extremely large positive number outside the supported range, parsing fails before normal index validation and the app
+may show a generic invalid command format message instead of the usual invalid index message. Although such index
+values are not realistic for normal InternTrack usage, we plan to refine the parser to detect out-of-range numeric
+index inputs and report them as invalid indices. This improves error-message consistency without changing the
+practical number of opportunity contacts the app is expected to handle.
